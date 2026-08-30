@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob:; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <title>سوبر ماركت أيوب - للنظم الذكية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #14213d;
+            --accent-color: #0b6d55; /* WCAG AA 6.3:1 on white (was #0f9d78 3.43:1) */
+            --accent-hover: #095e49;
+            --danger-color: #c53030; /* 5.47:1 on white (was #d94f5c 4.02:1) */
+            --danger-hover: #9b2c2c;
+            --light-bg: #f3f6fa;
+            --white: #ffffff;
+            --ink: #172033;
+            --muted: #5a6578; /* 5.89:1 on white (was #718096 4.02:1) */
+            --muted-strong: #4a5568;
+            --placeholder: #5f6b7f; /* 5.39:1 on white (was #9aa7b8 2.44:1) */
+            --line: #e5eaf1;
+            --line-strong: #cbd5e1;
+            --navy-soft: #20345d;
+            --surface-soft: #fbfcfe;
+            --surface-alt: #eef3f8;
+            --shadow-sm: 0 4px 14px rgba(20, 33, 61, 0.07);
+            --shadow-md: 0 12px 30px rgba(20, 33, 61, 0.11);
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: #f3f6fa;
+            color: var(--ink);
+            font-family: Tahoma, 'Segoe UI', sans-serif;
+            letter-spacing: .02em;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; height: 100vh;
+        }
+        nav {
+            background: linear-gradient(115deg, #14213d 0%, #20345d 100%);
+            min-height: 72px;
+            padding: 14px clamp(16px, 3vw, 36px);
+            box-shadow: 0 8px 24px rgba(20, 33, 61, .18);
+            position: relative; z-index: 2;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        #current-user-display { color: #b9c8df !important; font-size:.85rem; }
+        .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+        .nav-links button {
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.18);
+            color: #f8fafc;
+            padding: 9px 14px;
+            margin: 0;
+            border-radius: 8px;
+            cursor:pointer;
+            transition: background .2s ease, border-color .2s ease, transform .2s ease;
+        }
+        .nav-links button:hover { background: rgba(69,211,167,.18); border-color: #45d3a7; transform: translateY(-1px); }
+        .nav-links button[aria-current="page"] { background: rgba(69,211,167,.28); border-color: #45d3a7; color:#fff; font-weight:700; box-shadow: 0 2px 10px rgba(69,211,167,.3); }
+        .nav-links button.btn-danger { background: linear-gradient(135deg, #9b2c2c, #c53030); border-color: transparent; }
+        .container { flex: 1; padding: clamp(16px, 3vw, 32px); overflow-y: auto; }
+        .screen { display: none; }
+        .active-screen { display: block; }
+        .card {
+            background: rgba(255,255,255,.96);
+            padding: clamp(18px, 2.5vw, 28px);
+            border: 1px solid rgba(229,234,241,.9);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 22px;
+            transition: box-shadow .25s ease, transform .25s ease;
+        }
+        .card:hover { box-shadow: var(--shadow-md); }
+        h3, h4 { color: var(--primary-color); margin-top: 0; }
+        h3 { font-size: 1.2rem; margin-bottom: 18px; }
+        label.field-label { display:block; font-weight:700; color:var(--ink); margin-bottom:6px; font-size:.9rem; }
+        label.field-label span.req { color:var(--danger-color); }
+        .field-hint { font-size:.78rem; color:var(--muted); margin-top:4px; }
+        .field-error { font-size:.78rem; color:var(--danger-color); margin-top:4px; display:none; }
+        .field-error.visible { display:block; }
+        input, select, textarea {
+            background: #fbfcfe;
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            padding: 11px 13px;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+            width:100%;
+        }
+        input:focus, select:focus, textarea:focus { background: #fff; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(15,157,120,.12); }
+        input.input-error, select.input-error { border-color: var(--danger-color); box-shadow: 0 0 0 3px rgba(217,79,92,.12); }
+        input::placeholder, textarea::placeholder, select::placeholder { color: var(--placeholder); opacity:1; }
+        input[readonly] { background: var(--surface-alt) !important; color: var(--muted); cursor:not-allowed; border-color: var(--line); }
+        .btn {
+            border: 0; border-radius: 9px; padding: 11px 18px; cursor:pointer;
+            box-shadow: 0 3px 8px rgba(20,33,61,.08);
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+            font-weight:700; display:inline-flex; align-items:center; justify-content:center; gap:6px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 7px 16px rgba(20,33,61,.14); filter: brightness(1.04); }
+        .btn:active { transform: translateY(0); }
+        .btn:disabled { opacity:.55; cursor:not-allowed; transform:none; }
+        .btn-main { background: linear-gradient(135deg, #095e49, #0b6d55); color: #fff; } /* WCAG AA 7.75/6.3:1 white on bg */
+        .btn-secondary { background:#eef3f8; color:var(--primary-color); border:1px solid var(--line); }
+        .btn-ghost { background: transparent; border:1px solid var(--line); color:var(--primary-color); box-shadow:none; }
+        .btn-danger { background: linear-gradient(135deg, #9b2c2c, #c53030); color: #fff; } /* WCAG AA 7.53/5.47:1 */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: var(--shadow-sm); }
+        th, td { border: 0; border-bottom: 1px solid var(--line); padding: 13px 12px; text-align:center; }
+        th { background: #eef3f8; color: var(--primary-color); font-weight: 700; }
+        tr:last-child td { border-bottom: 0; }
+        tbody tr { transition: background .18s ease; }
+        tbody tr:hover { background: #f5fbf9; }
+        tr.low-stock { background: #fff7f7 !important; }
+        tr.low-stock td:nth-child(5) { color: var(--danger-color); font-weight:700; }
+        .badge { display:inline-block; padding:3px 8px; border-radius:999px; font-size:.75rem; font-weight:700; }
+        .badge-ok { background:#e6f7f0; color:#065f46; border:1px solid #a7f3d0; } /* 6.93:1 */
+        .badge-warn { background:#fff4e5; color:#92400e; border:1px solid #fbd38d; } /* 6.52:1 */
+        .badge-danger { background:#fde8e8; color:#9b2c2c; border:1px solid #feb2b2; } /* 7.53:1 (was #c53030 4.66:1) */
+        #login-modal { background: rgba(13, 24, 46, .78); backdrop-filter: blur(8px); position: fixed; inset:0; display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .login-box { background: #fff; border: 1px solid rgba(255,255,255,.65); border-radius: 20px; padding: 34px; width: min(420px, calc(100% - 32px)); box-shadow: 0 24px 70px rgba(10,23,49,.3); text-align:center; }
+        .login-box h3 { font-size: 1.45rem; margin-bottom: 6px; }
+        .login-box .login-hint { color:var(--muted); font-size:.85rem; margin-bottom:16px; }
+        .auth-tabs { display:flex; gap:8px; background:#eef3f8; padding:4px; border-radius:10px; margin-bottom:18px; }
+        .auth-tabs button { flex:1; border:0; border-radius:8px; padding:10px 12px; font-weight:700; cursor:pointer; background:transparent; color:var(--muted); transition: all .2s ease; }
+        .auth-tabs button.active { background:#fff; color:var(--primary-color); box-shadow:0 2px 8px rgba(20,33,61,.08); border:1px solid var(--line); }
+        .auth-tabs button:not(.active):hover { color:var(--ink); }
+        .auth-panel[hidden] { display:none !important; }
+        .auth-switch { margin-top:14px; font-size:.85rem; color:var(--muted); }
+        .auth-switch a { color:var(--accent-color); font-weight:700; cursor:pointer; text-decoration:none; border-bottom:1px dashed var(--accent-color); }
+        .auth-switch a:hover { color:#0d8a68; }
+        .section-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .section-tabs .btn { border: 1px solid var(--line); background: #f8fafc; color: var(--primary-color); }
+        .section-tabs .btn.active, .section-tabs .btn[aria-selected="true"] { background: linear-gradient(135deg, #095e49, #0b6d55); color: #fff; border-color: transparent; } /* WCAG AA */
+        .barcode-scanner-modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgba(13, 24, 46, .78); backdrop-filter: blur(8px); }
+        .barcode-scanner-modal[hidden] { display: none; }
+        .barcode-scanner-box { width: min(520px, 100%); background: var(--white); border-radius: 18px; padding: 18px; box-shadow: 0 24px 70px rgba(10,23,49,.3); }
+        .barcode-scanner-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+        #barcode-reader { width: 100%; overflow: hidden; border-radius: 12px; background: #101827; min-height:220px; aspect-ratio: 4/3; }
+        #barcode-reader video { border-radius: 12px; }
+        #barcode-scanner-status { color: var(--muted); margin-bottom: 0; }
+        .weight-product-search { display: flex; gap: 8px; margin: 12px 0; }
+        .weight-product-search input { flex: 1; min-width: 0; }
+        .weight-stock-meta { display: flex; gap: 14px; align-items: end; flex-wrap: wrap; margin: 12px 0; }
+        .weight-stock-meta label, #pos-weight-panel > div > label { display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-weight: 700; font-size:.85rem; }
+        #weight-product-select { width: 100%; }
+        #weight-calculated-total { color: var(--accent-color); font-size: 1.15rem; }
+        .pos-search-bar { display:flex; gap:10px; align-items:center; margin-bottom:18px; }
+        .pos-search-bar .btn { white-space: nowrap; }
+        /* Results */
+        #search-results { background: #f8fafc !important; border-radius:12px; }
+        .result-item { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px; border-bottom:1px solid var(--line); }
+        .result-item:last-child { border-bottom:0; }
+        .result-item button { flex:0 0 auto; }
+        .result-meta { text-align:right; }
+        .result-meta strong { display:block; }
+        .result-meta small { color:var(--muted); }
+        .empty-state { text-align:center; padding:28px; color:var(--muted); }
+        .empty-state i { font-size:2rem; margin-bottom:10px; display:block; color:#64748b; } /* 4.76:1 (was #cbd5e0 1.49:1) */
+        /* Cart */
+        .cart-footer { position: sticky; bottom:0; background: #fff; border-top:2px solid var(--line); margin: 18px -28px -28px -28px; padding:18px 28px; border-radius:0 0 16px 16px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; z-index:1; }
+        .cart-quantity-control { display:inline-flex; align-items:center; gap:6px; }
+        .cart-quantity-control .btn { min-width:48px; min-height:48px; padding:0; border-radius:10px; font-size:1.1rem; line-height:1; }
+        .cart-quantity-control input { width:84px; text-align:center; padding:10px 5px; font-weight:700; }
+        .weights-grid { gap: 18px; display:grid; grid-template-columns:1fr 1fr; }
+        .weights-grid > div { border: 1px solid var(--line) !important; border-radius: 13px; background: #fbfcfe; padding: 18px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+        /* Toast */
+        #toast-container { position: fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:10px; align-items:center; pointer-events:none; }
+        .toast { pointer-events:auto; min-width:280px; max-width:min(440px, calc(100vw - 32px)); padding:14px 18px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.18); display:flex; gap:10px; align-items:center; font-weight:700; animation: toastIn .35s ease; border:1px solid; }
+        .toast-success { background:#e6f7f0; color:#065f46; border-color:#a7f3d0; }
+        .toast-error { background:#fde8e8; color:#7f1d1d; border-color:#fecaca; }
+        .toast-info { background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; }
+        @keyframes toastIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0);} }
+        @keyframes toastOut { to { opacity:0; transform:translateY(10px);} }
+        /* Dialogs */
+        .app-dialog { position:fixed; inset:0; z-index:2000; display:flex; align-items:center; justify-content:center; padding:18px; background:rgba(13,24,46,.62); backdrop-filter: blur(4px); }
+        .app-dialog[hidden] { display:none; }
+        .app-dialog-box { width:min(520px,100%); max-height:90vh; overflow:auto; background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:16px; padding:24px; box-shadow: var(--shadow-md); animation: dialogIn .25s ease; }
+        @keyframes dialogIn { from { opacity:0; transform:scale(.96) translateY(8px)} to { opacity:1; transform:scale(1) translateY(0)}}
+        .app-dialog-box h3 { margin-bottom:16px; }
+        .dialog-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap; }
+        .employee-row { display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid var(--line); padding:12px 0; }
+        .employee-row small { display:block; color:var(--muted); margin-top:4px; }
+        .employee-actions { display:flex; flex-wrap:wrap; gap:6px; }
+        .employee-actions .btn { padding:8px 12px; font-size:.82rem; min-height:36px; }
+        .settings-tabs { display:flex; gap:8px; margin-bottom:16px; border-bottom:2px solid var(--line); padding-bottom:12px; flex-wrap:wrap; }
+        .settings-tabs button { background:transparent; border:1px solid var(--line); color:var(--primary-color); padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:700; }
+        .settings-tabs button.active { background:var(--primary-color); color:#fff; border-color:var(--primary-color); }
+        .settings-panel[hidden] { display:none; }
+        .danger-zone { border:2px solid #feb2b2; background:#fff5f5; }
+        .hidden { display: none !important; }
+        /* Print — only receipt */
+        @media print {
+          nav, .nav-links, .pos-search-bar, .section-tabs, #search-results, #pos-weight-panel, .cart-quantity-control, #pos-shift-stats, .barcode-scanner-modal, #toast-container, .settings-tabs { display:none !important; }
+          body { background:#fff !important; height:auto; }
+          .container { padding:0; }
+          .screen { display:none !important; }
+          #screen-pos { display:block !important; }
+          .card { box-shadow:none; border:none; padding:0; margin:0; background:#fff !important; }
+          #cart-table, #cart-empty, .cart-footer { display:none !important; }
+          #receipt-print { display:block !important; position:static !important; padding:20px; background:#fff; color:#000; border:1px solid #ddd; }
+          #receipt-print * { color:#000 !important; }
+        }
+        html[data-theme="dark"] {
+            --light-bg:#0f172a; --white:#172033; --ink:#e8eef8; --muted:#a9b8ce; --placeholder:#94a3b8; --line:#334155; --card-bg:#172033; --primary-color:#dce7f7;
+            --accent-color:#34d399; --accent-hover:#6ee7b7; --danger-color:#fca5a5; --surface-soft:#1e293b; --surface-alt:#253653;
+        }
+        html[data-theme="dark"] body { background:#0f172a !important; color:#e8eef8 !important; }
+        html[data-theme="dark"] .card, html[data-theme="dark"] .login-box, html[data-theme="dark"] .barcode-scanner-box, html[data-theme="dark"] .app-dialog-box { background:#172033 !important; color:#e8eef8 !important; border-color:#334155 !important; }
+        html[data-theme="dark"] input, html[data-theme="dark"] select, html[data-theme="dark"] textarea { background:#0f1a2d !important; color:#e8eef8 !important; border-color:#475569 !important; }
+        html[data-theme="dark"] table { background:#172033 !important; border-color:#334155 !important; }
+        html[data-theme="dark"] th { background:#253653 !important; color:#e8eef8 !important; }
+        html[data-theme="dark"] td { color:#e8eef8 !important; border-color:#334155 !important; }
+        html[data-theme="dark"] tbody tr:hover { background:#20324e !important; }
+        html[data-theme="dark"] .section-tabs .btn, html[data-theme="dark"] #search-results, html[data-theme="dark"] .weights-grid > div { background:#13223a !important; color:#e8eef8 !important; border-color:#334155 !important; }
+        html[data-theme="dark"] .btn:not(.btn-main):not(.btn-danger) { background:#253653 !important; color:#e8eef8 !important; border-color:#475569 !important; }
+        html[data-theme="dark"] .cart-footer { background:#172033 !important; border-color:#334155 !important; }
+        html[data-theme="dark"] .auth-tabs { background:#0f1a2d !important; border:1px solid #334155; }
+        html[data-theme="dark"] .auth-tabs button.active { background:#172033 !important; color:#e8eef8 !important; border-color:#475569 !important; }
+        /* --- Workers page contrast fixes (dark) --- */
+        html[data-theme="dark"] input::placeholder, html[data-theme="dark"] textarea::placeholder { color: var(--placeholder) !important; opacity:1; }
+        html[data-theme="dark"] input[readonly] { background:#1e293b !important; color:var(--muted) !important; border-color:#475569 !important; }
+        html[data-theme="dark"] .settings-tabs button.active { background:#e2e8f0 !important; color:#0f172a !important; border-color:#e2e8f0 !important; }
+        html[data-theme="dark"] .danger-zone { background:#291e22 !important; border-color:#7f1d1d !important; }
+        html[data-theme="dark"] .danger-zone h3 { color:#fca5a5 !important; }
+        html[data-theme="dark"] .danger-zone p, html[data-theme="dark"] .danger-zone .field-hint { color:#fecaca !important; }
+        html[data-theme="dark"] #owner-only-settings > div { background:#1e293b !important; border-color:#334155 !important; }
+        html[data-theme="dark"] #owner-only-settings label { color:#e8eef8 !important; }
+        html[data-theme="dark"] div[style*="background:#fbfcfe"] { background:#1e293b !important; }
+        html[data-theme="dark"] .badge-ok { background:#06402e !important; color:#6ee7b7 !important; border-color:#065f46 !important; }
+        html[data-theme="dark"] .badge-warn { background:#422006 !important; color:#fcd34d !important; border-color:#92400e !important; }
+        html[data-theme="dark"] .badge-danger { background:#450a0a !important; color:#fca5a5 !important; border-color:#7f1d1d !important; }
+        html[data-theme="dark"] .field-hint { color: var(--muted) !important; }
+        html[data-theme="dark"] .field-error { color: var(--danger-color) !important; }
+        html[data-theme="dark"] .employee-row small { color: var(--muted) !important; }
+        html[data-theme="dark"] .empty-state { color: var(--muted) !important; }
+        html[data-theme="dark"] .empty-state i { color: #94a3b8 !important; }
+        /* Fix readonly weight price in dark */
+        html[data-theme="dark"] #weight-price { background:#1e293b !important; color: var(--muted) !important; }
+        html[data-theme="dark"] #owner-whatsapp-status, html[data-theme="dark"] #owner-pin-status { color: #34d399 !important; }
+        /* Fix perms grid text contrast */
+        html[data-theme="dark"] .perm { accent-color: var(--accent-color); }
+        /* Ensure btn-main retains contrast in dark (keep dark gradient) */
+        html[data-theme="dark"] .btn-main { background: linear-gradient(135deg, #065f46, #0b6d55) !important; color:#fff !important; border-color:transparent !important; }
+        html[data-theme="dark"] .btn-danger { background: linear-gradient(135deg, #7f1d1d, #c53030) !important; color:#fff !important; }
+        @media (max-width: 760px) {
+            nav { align-items: flex-start; gap: 12px; flex-direction: column; }
+            .nav-links { justify-content: flex-start; width: 100%; }
+            .nav-links button { flex: 1 1 auto; }
+            .pos-search-bar { align-items: stretch !important; flex-wrap:wrap; }
+            .weights-grid { grid-template-columns: 1fr; }
+            table { display: block; overflow-x: auto; white-space: nowrap; }
+            .card { padding: 17px; }
+            .cart-footer { flex-direction:column; align-items:stretch; }
+            .employee-row { flex-direction:column; align-items:flex-start; }
+        }
+    
+        /* Floating WhatsApp Support */
+        #support-wa-fab {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #25D366;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 20px rgba(37,211,102,.4), 0 2px 8px rgba(0,0,0,.15);
+            z-index: 999;
+            text-decoration: none;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        #support-wa-fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,211,102,.5), 0 4px 12px rgba(0,0,0,.2); }
+        #support-wa-fab:active { transform: scale(.96); }
+        #support-wa-fab .fab-tip {
+            position: absolute;
+            left: 64px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #111827;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s;
+        }
+        #support-wa-fab:hover .fab-tip { opacity: 1; }
+        @media (max-width: 600px) {
+            #support-wa-fab { bottom: 16px; left: 16px; width: 52px; height: 52px; font-size: 26px; }
+            #support-wa-fab .fab-tip { display: none; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <nav>
+        <div>
+            <strong>سوبر ماركت أيوب</strong>
+            <span id="current-user-display"></span>
+        </div>
+        <div class="nav-links">
+            <button id="nav-pos" onclick="showScreen('pos')" aria-current="page">البيع</button>
+            <button id="nav-inventory" onclick="showScreen('inventory')">المخزن</button>
+            <button id="nav-expenses" onclick="showScreen('expenses')">المصروفات</button>
+            <button id="nav-settings" onclick="showScreen('settings')">الإعدادات</button>
+            <button onclick="logout()" class="btn-danger" aria-label="تسجيل خروج">خروج <i class="fa fa-sign-out-alt"></i></button>
+        </div>
+    </nav>
+
+    <div id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+        <div class="login-box">
+            <div class="auth-tabs" role="tablist" aria-label="تسجيل الدخول أو إنشاء حساب">
+                <button id="auth-tab-login" role="tab" aria-selected="true" class="active" onclick="switchAuthTab('login')"><i class="fa fa-sign-in-alt"></i> تسجيل دخول</button>
+                <button id="auth-tab-signup" role="tab" aria-selected="false" onclick="switchAuthTab('signup')"><i class="fa fa-user-plus"></i> إنشاء حساب</button>
+            </div>
+            <!-- Login Panel -->
+            <div id="auth-login-panel" class="auth-panel" role="tabpanel">
+                <h3 id="login-title">تسجيل الدخول</h3>
+                <p class="login-hint">أدخل اسم المستخدم وكلمة المرور الخاصة بك — جميع الأسماء فريدة (لا يوجد اسم محجوز)</p>
+                <div style="text-align:right;">
+                    <label class="field-label" for="login-name">اسم المستخدم <span class="req">*</span></label>
+                    <input type="text" id="login-name" placeholder="مثال: أحمد" autocomplete="username" aria-required="true">
+                    <div id="login-name-error" class="field-error"></div>
+                </div>
+                <div style="text-align:right; margin-top:10px; position:relative;">
+                    <label class="field-label" for="login-pin">الرمز السري <span class="req">*</span></label>
+                    <input type="password" id="login-pin" placeholder="••••" autocomplete="current-password" aria-required="true">
+                    <button type="button" onclick="toggleLoginPin()" style="position:absolute; left:10px; top:32px; background:transparent; border:0; cursor:pointer; color:var(--muted)" aria-label="إظهار الرمز"><i id="pin-eye" class="fa fa-eye"></i></button>
+                    <div id="login-pin-error" class="field-error"></div>
+                </div>
+                <div id="login-error" role="alert" style="display:none; margin-top:12px; background:#fde8e8; color:#7f1d1d; border:1px solid #fecaca; padding:10px; border-radius:8px; font-size:.85rem;"></div>
+                <button id="login-btn" class="btn btn-main" onclick="handleLogin()" style="width: 100%; margin-top:16px"><span id="login-btn-text">دخول</span> <i id="login-spinner" class="fa fa-spinner fa-spin" style="display:none"></i></button>
+                <p class="auth-switch">ليس لديك حساب؟ <a onclick="switchAuthTab('signup')">أنشئ حساباً الآن</a></p>
+            </div>
+            <!-- Create Account Panel — SINGLE ADMIN ONLY -->
+            <div id="auth-signup-panel" class="auth-panel" role="tabpanel" hidden>
+                <h3 id="signup-title">إنشاء حساب المسؤول</h3>
+                <p class="login-hint" id="signup-hint">هذا متاح فقط عند أول تشغيل — قبل وجود أي حساب. سيتم إنشاؤك كـ <strong>مسؤول (Admin)</strong> بصلاحيات كاملة، وبعدها تُنشئ باقي العمال من الإعدادات > الموظفون.</p>
+                <div id="signup-blocked" role="alert" hidden style="background:#fef3c7; color:#92400e; border:1px solid #fbd38d; padding:10px; border-radius:8px; font-size:.85rem; margin-bottom:12px; text-align:right;">
+                    <i class="fa fa-lock"></i> تم إنشاء حساب المسؤول بالفعل — لا يمكن إنشاء حساب جديد من هنا. سجّل دخولك كمسؤول لإنشاء حسابات العمال من <strong>الإعدادات > الموظفون</strong>.
+                </div>
+                <div style="text-align:right;">
+                    <label class="field-label" for="signup-name">اسم المستخدم <span class="req">*</span></label>
+                    <input type="text" id="signup-name" placeholder="مثال: أحمد" autocomplete="username" aria-required="true">
+                    <div id="signup-name-error" class="field-error"></div>
+                </div>
+                <div style="text-align:right; margin-top:10px; position:relative;">
+                    <label class="field-label" for="signup-pin">الرمز السري <span class="req">*</span> <small style="font-weight:400;color:var(--muted)">(≥6 أحرف، تجنب 000000/123456)</small></label>
+                    <input type="password" id="signup-pin" placeholder="••••••" autocomplete="new-password" aria-required="true">
+                    <button type="button" onclick="toggleSignupPin('signup-pin','signup-pin-eye')" style="position:absolute; left:10px; top:32px; background:transparent; border:0; cursor:pointer; color:var(--muted)" aria-label="إظهار الرمز"><i id="signup-pin-eye" class="fa fa-eye"></i></button>
+                    <div id="signup-pin-error" class="field-error"></div>
+                </div>
+                <div style="text-align:right; margin-top:10px; position:relative;">
+                    <label class="field-label" for="signup-pin-confirm">تأكيد الرمز السري <span class="req">*</span></label>
+                    <input type="password" id="signup-pin-confirm" placeholder="••••••" autocomplete="new-password" aria-required="true">
+                    <button type="button" onclick="toggleSignupPin('signup-pin-confirm','signup-pin-confirm-eye')" style="position:absolute; left:10px; top:32px; background:transparent; border:0; cursor:pointer; color:var(--muted)" aria-label="إظهار الرمز"><i id="signup-pin-confirm-eye" class="fa fa-eye"></i></button>
+                    <div id="signup-pin-confirm-error" class="field-error"></div>
+                </div>
+                <div id="signup-error" role="alert" style="display:none; margin-top:12px; background:#fde8e8; color:#7f1d1d; border:1px solid #fecaca; padding:10px; border-radius:8px; font-size:.85rem;"></div>
+                <button id="signup-btn" class="btn btn-main" onclick="handleSignup()" style="width: 100%; margin-top:16px"><span id="signup-btn-text">إنشاء حساب المسؤول</span> <i id="signup-spinner" class="fa fa-spinner fa-spin" style="display:none"></i></button>
+                <p class="auth-switch">لديك حساب بالفعل؟ <a onclick="switchAuthTab('login')">سجّل دخول</a></p>
+            </div>
+            <div style="margin-top:16px; border-top:1px solid var(--line); padding-top:14px; text-align:center;">
+                <a href="https://wa.me/201281338512?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9%20%D9%81%D9%8A%20%D8%AA%D8%B3%D8%AC%D9%8A%D9%84%20%D8%A7%D9%84%D8%AF%D8%AE%D9%88%D9%84%20%D9%84%D9%86%D8%B8%D8%A7%D9%85%20%D8%B3%D9%88%D8%A8%D8%B1%20%D9%85%D8%A7%D8%B1%D9%83%D8%AA%20%D8%A3%D9%8A%D9%88%D8%A8" target="_blank" rel="noopener noreferrer" style="color:#25D366; font-weight:800; font-size:.85rem; text-decoration:none; display:inline-flex; align-items:center; gap:6px; min-height:44px;"><i class="fab fa-whatsapp"></i> الدعم الفني واتساب — ‎+20 128 133 8512</a>
+                <div style="color:var(--muted); font-size:.75rem; margin-top:4px;">تواصل مباشرة عند أي مشكلة في الدخول</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="barcode-scanner-modal" class="barcode-scanner-modal" role="dialog" aria-modal="true" aria-labelledby="barcode-scanner-title" hidden>
+        <div class="barcode-scanner-box">
+            <div class="barcode-scanner-header">
+                <h3 id="barcode-scanner-title">مسح الباركود</h3>
+                <button type="button" class="btn btn-danger" onclick="closeBarcodeScanner()" aria-label="إغلاق ماسح الباركود">إغلاق</button>
+            </div>
+            <div id="barcode-reader" aria-label="واجهة كاميرا قراءة الباركود"></div>
+            <p id="barcode-scanner-status">اسمح بالوصول إلى الكاميرا ووجّهها نحو الباركود.</p>
+            <p style="font-size:.8rem; color:var(--muted); margin-top:8px;"><i class="fa fa-lightbulb"></i> إذا فشل المسح، اكتب الباركود يدوياً في خانة البحث.</p>
+        </div>
+    </div>
+
+    <!-- Edit Product Dialog -->
+    <div id="edit-product-modal" class="app-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="edit-product-title">
+        <div class="app-dialog-box">
+            <h3 id="edit-product-title">تعديل الصنف</h3>
+            <input type="hidden" id="edit-product-index">
+            <div style="display:grid; gap:12px;">
+                <div>
+                    <label class="field-label" for="edit-p-name">اسم المنتج <span class="req">*</span></label>
+                    <input id="edit-p-name" type="text" placeholder="مثال: سكر 1كجم">
+                    <div id="edit-p-name-error" class="field-error"></div>
+                </div>
+                <div>
+                    <label class="field-label" for="edit-p-barcode">الباركود <small style="font-weight:400;color:var(--muted)">(اختياري للأوزان)</small></label>
+                    <input id="edit-p-barcode" type="text" placeholder="9780123456789">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label class="field-label" for="edit-p-buy">سعر الشراء <span class="req">*</span></label>
+                        <input id="edit-p-buy" type="number" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div>
+                        <label class="field-label" for="edit-p-sell">سعر البيع <span class="req">*</span></label>
+                        <input id="edit-p-sell" type="number" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label class="field-label" for="edit-p-type">نوع الوحدة</label>
+                        <select id="edit-p-type"><option value="piece">قطعة</option><option value="weight">وزن (كجم)</option></select>
+                    </div>
+                    <div>
+                        <label class="field-label" for="edit-p-qty">الكمية <span class="req">*</span></label>
+                        <input id="edit-p-qty" type="number" min="0" step="any" placeholder="0">
+                        <div id="edit-p-qty-error" class="field-error"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-ghost" onclick="closeDialog('edit-product-modal')">إلغاء</button>
+                <button class="btn btn-main" onclick="saveEditedProduct()">حفظ التعديل</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Owner PIN Dialog -->
+    <div id="owner-pin-modal" class="app-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="owner-pin-title">
+        <div class="app-dialog-box" style="max-width:380px;">
+            <h3 id="owner-pin-title">تأكيد رمز المالك</h3>
+            <p style="color:var(--muted); font-size:.9rem;">هذا الإجراء يتطلب رمز المالك.</p>
+            <label class="field-label" for="owner-pin-input">رمز المالك</label>
+            <input id="owner-pin-input" type="password" placeholder="••••" autocomplete="off">
+            <div id="owner-pin-error" class="field-error"></div>
+            <div class="dialog-actions">
+                <button class="btn btn-ghost" onclick="closeOwnerPinDialog(false)">إلغاء</button>
+                <button class="btn btn-main" onclick="closeOwnerPinDialog(true)">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generic Confirm Dialog -->
+    <div id="confirm-modal" class="app-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div class="app-dialog-box" style="max-width:420px;">
+            <h3 id="confirm-title">تأكيد</h3>
+            <p id="confirm-message" style="color:var(--muted)"></p>
+            <div class="dialog-actions">
+                <button class="btn btn-ghost" onclick="closeConfirm(false)">إلغاء</button>
+                <button id="confirm-ok-btn" class="btn btn-main" onclick="closeConfirm(true)">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Dialog -->
+    <div id="checkout-modal" class="app-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+        <div class="app-dialog-box">
+            <h3 id="checkout-title"><i class="fa fa-receipt"></i> إتمام البيع</h3>
+            <div id="checkout-summary" style="background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:12px; max-height:180px; overflow:auto;"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label class="field-label" for="checkout-total">الإجمالي (ج.م)</label>
+                    <input id="checkout-total" type="text" readonly>
+                </div>
+                <div>
+                    <label class="field-label" for="checkout-paid">المبلغ المدفوع <span class="req">*</span></label>
+                    <input id="checkout-paid" type="number" min="0" step="0.01" placeholder="0.00" oninput="updateCheckoutChange()">
+                    <div id="checkout-paid-error" class="field-error"></div>
+                </div>
+            </div>
+            <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; background:#e6f7f0; border:1px solid #a7f3d0; padding:12px; border-radius:10px;">
+                <span>المتبقي / الباقي:</span>
+                <strong id="checkout-change" style="font-size:1.3rem; color:var(--accent-color);">0.00 ج.م</strong>
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-ghost" onclick="closeDialog('checkout-modal')">إلغاء</button>
+                <button id="confirm-sale-btn" class="btn btn-secondary" onclick="confirmCheckout(false)"><i class="fa fa-check"></i> تأكيد البيع</button>
+                <button id="confirm-sale-print-btn" class="btn btn-main" onclick="confirmCheckout(true)">تأكيد وطباعة <i class="fa fa-print"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shift Preview Dialog -->
+    <div id="shift-preview-modal" class="app-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="shift-preview-title">
+        <div class="app-dialog-box" style="max-width:600px;">
+            <h3 id="shift-preview-title">معاينة تقرير الشيفت</h3>
+            <div id="shift-preview-content" style="white-space:pre-wrap; background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:14px; font-size:.9rem; max-height:50vh; overflow:auto;"></div>
+            <div class="dialog-actions">
+                <button class="btn btn-ghost" onclick="closeDialog('shift-preview-modal')">إلغاء</button>
+                <button class="btn btn-secondary" onclick="copyShiftReport()"><i class="fa fa-copy"></i> نسخ</button>
+                <button class="btn btn-main" onclick="sendShiftWhatsapp()"><i class="fab fa-whatsapp"></i> إرسال واتساب</button>
+            </div>
+            <label style="display:flex; gap:8px; margin-top:12px; font-size:.9rem;"><input type="checkbox" id="shift-reset-after" checked> تصفير مبيعات الشيفت بعد الإرسال</label>
+        </div>
+    </div>
+
+    <!-- Factory Reset Dialog -->
+    <div id="factory-reset-modal" class="app-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="factory-reset-title">
+        <div class="app-dialog-box danger-zone" style="max-width:500px;">
+            <h3 id="factory-reset-title" style="color:var(--danger-color)"><i class="fa fa-exclamation-triangle"></i> تصفير كافة البيانات</h3>
+            <p style="color:var(--ink); font-size:.9rem;">هذا سيحذف <strong>جميع المنتجات والمبيعات والمصروفات وتقفيلات الشيفت</strong> نهائياً. لا يمكن التراجع.</p>
+            <div style="margin:12px 0; display:grid; gap:10px;">
+                <div>
+                    <label class="field-label" for="factory-pin">رمز المالك</label>
+                    <input id="factory-pin" type="password" placeholder="أدخل رمز المالك">
+                    <div id="factory-pin-error" class="field-error"></div>
+                </div>
+                <div>
+                    <label class="field-label" for="factory-confirm">اكتب كلمة <code>DELETE</code> للتأكيد</label>
+                    <input id="factory-confirm" type="text" placeholder="DELETE">
+                    <div id="factory-confirm-error" class="field-error"></div>
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <button class="btn btn-secondary" onclick="downloadBackup()" style="flex:1"><i class="fa fa-download"></i> تنزيل نسخة احتياطية أولاً</button>
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-ghost" onclick="closeDialog('factory-reset-modal')">إلغاء</button>
+                <button class="btn btn-danger" onclick="confirmFactoryReset()">تصفير نهائي</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- شاشة البيع POS -->
+        <div id="screen-pos" class="screen active-screen">
+            <div class="card">
+                <h3><i class="fas fa-cash-register"></i> نقطة البيع</h3>
+                    <div class="section-tabs" role="tablist" aria-label="نوع مبيعات نقطة البيع">
+                        <button type="button" class="btn pos-tab active" data-pos="piece" role="tab" aria-selected="true" onclick="switchPosTab('piece', this)">مبيعات القطع</button>
+                        <button type="button" class="btn pos-tab" data-pos="weight" role="tab" aria-selected="false" onclick="switchPosTab('weight', this)">مبيعات الأوزان</button>
+                    </div>
+                    <div id="pos-piece-panel" role="tabpanel">
+                        <div class="pos-search-bar">
+                            <div style="flex:1;">
+                                <label class="field-label" for="pos-search" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);">بحث المنتجات</label>
+                                <input type="search" id="pos-search" placeholder="ابحث بالاسم أو الباركود..." aria-label="بحث بالاسم أو الباركود" oninput="debouncedSearch()" onkeydown="if (event.key === 'Enter') { event.preventDefault(); searchProduct(); }">
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="searchProduct()" aria-label="بحث عن منتج">بحث <i class="fa fa-search"></i></button>
+                            <button type="button" class="btn btn-main" onclick="openBarcodeScanner()" aria-label="مسح الباركود بالكاميرا">مسح بالباركود <i class="fa fa-camera"></i></button>
+                        </div>
+                        <div id="search-results" style="border: 1px solid var(--line); padding: 10px; border-radius:12px;">
+                            <h4 style="margin:0 0 8px 0;">منتجات القطع</h4>
+                            <div id="results-list" role="list"></div>
+                        </div>
+                    </div>
+                    <div id="pos-weight-panel" class="hidden" role="tabpanel">
+                        <div style="border: 1px solid var(--line); padding: 14px; border-radius:12px;">
+                            <h4>مبيعات الأوزان / الكيلو</h4>
+                            <div class="weight-product-search">
+                                <input type="search" id="weight-product-search" placeholder="ابحث عن صنف موزون بالاسم..." oninput="debouncedWeightSearch()" aria-label="بحث في منتجات الأوزان">
+                                <button type="button" class="btn btn-secondary" onclick="renderWeightProducts()">بحث</button>
+                            </div>
+                            <label class="field-label" for="weight-product-select">صنف الوزن</label>
+                            <select id="weight-product-select" onchange="updateWeightDetails(this.value)" aria-label="اختيار صنف الوزن">
+                                <option value="">اختر صنف الوزن من المخزن</option>
+                            </select>
+                            <div id="weight-products-empty" class="field-hint" style="display:none; color:var(--danger-color); margin-top:6px;"><i class="fa fa-exclamation-circle"></i> لا يوجد أصناف موزونة مطابقة — جرّب بحثاً آخر أو أضف صنف وزن جديد من المخزن</div>
+                            <div class="weight-stock-meta">
+                                <label>سعر الكيلو
+                                    <input type="number" id="weight-price" readonly aria-readonly="true" tabindex="-1">
+                                </label>
+                                <span>الكمية المتاحة: <strong id="weight-available-kg">0</strong> كجم</span>
+                            </div>
+                            <label class="field-label" for="weight-grams">الوزن بالجرام <span class="req">*</span></label>
+                            <input type="number" id="weight-grams" placeholder="مثال: 250" min="1" step="1" oninput="calculateWeightTotal()" aria-label="الوزن بالجرام">
+                            <div id="weight-grams-error" class="field-error"></div>
+                            <p>الإجمالي: <strong id="weight-calculated-total">0.00</strong> ج.م</p>
+                            <button class="btn btn-main" onclick="addWeightItem()"><i class="fa fa-plus"></i> إضافة للفاتورة</button>
+                        </div>
+                    </div>
+
+                <div style="margin-top:18px; overflow:auto;">
+                    <table id="cart-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">الصنف</th>
+                                <th scope="col">السعر</th>
+                                <th scope="col">الكمية</th>
+                                <th scope="col">الإجمالي</th>
+                                <th scope="col">حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items"></tbody>
+                    </table>
+                    <div id="cart-empty" class="empty-state" style="border:1px dashed var(--line); border-radius:12px; margin-top:12px;">
+                        <i class="fa fa-shopping-cart"></i>
+                        السلة فارغة — ابحث عن منتج وأضفه للفاتورة
+                    </div>
+                </div>
+
+                <div class="cart-footer">
+                    <h3 style="margin:0;">الإجمالي: <span id="cart-total" style="color:var(--accent-color);">0.00</span> ج.م</h3>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-ghost" onclick="clearCart()" id="clear-cart-btn">تفريغ السلة</button>
+                        <button class="btn btn-main" onclick="openCheckoutDialog()" style="min-width:160px;"><i class="fa fa-cash-register"></i> إتمام البيع</button>
+                    </div>
+                </div>
+                <div id="pos-shift-stats" class="card" style="margin-top: 18px; display: flex; justify-content: space-around; gap: 12px; text-align: center; box-shadow:none; border-style:dashed;">
+                    <div><strong>إجمالي مبيعات الشيفت</strong><br><span id="shift-sales-total" style="font-size:1.1rem; color:var(--accent-color);">0.00 ج.م</span></div>
+                    <div><strong>عدد الفواتير</strong><br><span id="shift-invoices-count">0</span></div>
+                    <div><strong>القطع/الجرامات المباعة</strong><br><span id="shift-items-count">0</span></div>
+                </div>
+                <div id="receipt-print" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- شاشة المخزن -->
+        <div id="screen-inventory" class="screen">
+            <div class="card">
+                <h3>إضافة منتج جديد</h3>
+                <div id="inventory-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; align-items:end;">
+                    <div>
+                        <label class="field-label" for="p-name">اسم المنتج <span class="req">*</span></label>
+                        <input type="text" id="p-name" placeholder="مثال: سكر 1كجم" aria-required="true">
+                        <div id="p-name-error" class="field-error"></div>
+                    </div>
+                    <div>
+                        <label class="field-label" for="p-barcode">الباركود <small style="font-weight:400; color:var(--muted)">(اختياري للوزن)</small></label>
+                        <input type="text" id="p-barcode" placeholder="9780123...">
+                        <div id="p-barcode-error" class="field-error"></div>
+                    </div>
+                    <div>
+                        <label class="field-label" for="p-buy">سعر الشراء</label>
+                        <input type="number" id="p-buy" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <div>
+                        <label class="field-label" for="p-sell">سعر البيع <span class="req">*</span></label>
+                        <input type="number" id="p-sell" placeholder="0.00" min="0" step="0.01" aria-required="true">
+                    </div>
+                    <div>
+                        <label class="field-label" for="p-type">نوع الصنف</label>
+                        <select id="p-type" aria-label="نوع الصنف">
+                            <option value="piece">قطعة</option>
+                            <option value="weight">وزن (كجم)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label" for="p-qty">الكمية <span class="req">*</span></label>
+                        <input type="number" id="p-qty" placeholder="0" step="any" min="0" aria-required="true">
+                        <div id="p-qty-error" class="field-error"></div>
+                    </div>
+                    <div style="grid-column: 1 / -1; display:flex; gap:8px; justify-content:flex-end; margin-top:4px;">
+                        <button class="btn btn-ghost" onclick="resetInventoryForm()">مسح</button>
+                        <button class="btn btn-main" onclick="addNewProduct()"><i class="fa fa-plus"></i> إضافة للمخزن</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <h3 style="margin:0;">قائمة الأصناف</h3>
+                    <div style="flex:1; max-width:360px;">
+                        <input type="search" id="inventory-search" placeholder="بحث في المخزن بالاسم أو الباركود..." aria-label="بحث في المخزن" oninput="renderInventory()">
+                    </div>
+                </div>
+                <div class="section-tabs stock-tabs" role="tablist" aria-label="تصفية المخزون حسب التوفر" style="margin-top:14px;">
+                    <button type="button" class="btn btn-main stock-tab active" data-stock="all" role="tab" aria-selected="true" onclick="filterStockTab('all', this)"><i class="fa fa-layer-group"></i> الكل <span class="tab-count" id="stock-count-all"></span></button>
+                    <button type="button" class="btn stock-tab" data-stock="available" role="tab" aria-selected="false" onclick="filterStockTab('available', this)"><i class="fa fa-check-circle"></i> متوفر <span class="tab-count" id="stock-count-available"></span></button>
+                    <button type="button" class="btn stock-tab" data-stock="low" role="tab" aria-selected="false" onclick="filterStockTab('low', this)"><i class="fa fa-exclamation-triangle"></i> ناقص <span class="tab-count" id="stock-count-low"></span></button>
+                </div>
+                <div class="section-tabs" role="tablist" aria-label="نوع منتجات المخزن" style="margin-top:10px;">
+                    <button type="button" class="btn btn-main inventory-tab active" role="tab" aria-selected="true" onclick="filterInventoryTab('piece', this)">منتجات بالقطعة</button>
+                    <button type="button" class="btn inventory-tab" role="tab" aria-selected="false" onclick="filterInventoryTab('weight', this)">منتجات بالأوزان/الكيلو</button>
+                </div>
+                <div style="overflow:auto;">
+                    <table id="inventory-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">الباركود</th>
+                                <th scope="col">الاسم</th>
+                                <th scope="col">الشراء</th>
+                                <th scope="col">البيع</th>
+                                <th scope="col">الكمية</th>
+                                <th scope="col">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-list"></tbody>
+                    </table>
+                    <div id="inventory-empty" class="empty-state hidden">
+                        <i class="fa fa-box-open"></i>
+                        لا توجد منتجات مطابقة — جرّب البحث أو أضف صنفاً جديداً
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- شاشة المصروفات -->
+        <div id="screen-expenses" class="screen">
+            <div class="card">
+                <h3>تسجيل مصروفات</h3>
+                <div id="expenses-form" style="display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:end;">
+                    <div>
+                        <label class="field-label" for="exp-reason">السبب <span class="req">*</span></label>
+                        <input type="text" id="exp-reason" placeholder="السبب (أكياس، فواتير...)" aria-required="true">
+                        <div id="exp-reason-error" class="field-error"></div>
+                    </div>
+                    <div>
+                        <label class="field-label" for="exp-amount">المبلغ (ج.م) <span class="req">*</span></label>
+                        <input type="number" id="exp-amount" placeholder="0.00" min="0" step="0.01" aria-required="true">
+                        <div id="exp-amount-error" class="field-error"></div>
+                    </div>
+                    <div style="display:flex; align-items:end;">
+                        <button class="btn btn-danger" onclick="addExpense()" style="height:44px;"><i class="fa fa-plus"></i> تسجيل</button>
+                    </div>
+                </div>
+                <div style="overflow:auto; margin-top:16px;">
+                    <h4>سجل مصروفات الشيفت الحالي</h4>
+                    <table id="expenses-history-table">
+                        <thead><tr><th scope="col">الوقت</th><th scope="col">السبب</th><th scope="col">المبلغ</th><th scope="col">المستخدم</th></tr></thead>
+                        <tbody id="expenses-history-list"></tbody>
+                    </table>
+                    <div id="expenses-empty" class="empty-state hidden"><i class="fa fa-receipt"></i> لا توجد مصروفات في هذا الشيفت</div>
+                    <p style="text-align:left; margin-top:10px; font-weight:700;">إجمالي المصروفات: <span id="expenses-total">0.00</span> ج.م</p>
+                </div>
+            </div>
+            <div class="card">
+                <h3>تقفيل الشيفت (End Shift)</h3>
+                <p class="field-hint" style="margin-bottom:12px;">يتم حساب المبيعات والمصروفات من قاعدة البيانات السحابية منذ آخر تقفيل، وليس من الذاكرة المؤقتة — لضمان دقة التقرير حتى بعد إعادة التحميل.</p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-main" style="background: #8e44ad;" onclick="openShiftPreview()"><i class="fa fa-file-alt"></i> معاينة تقرير الواتساب</button>
+                    <button class="btn btn-secondary" onclick="startNewShift()"><i class="fa fa-play"></i> بدء وردية جديدة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- شاشة الإعدادات -->
+        <div id="screen-settings" class="screen">
+            <div class="card">
+                <div class="settings-tabs" role="tablist">
+                    <button class="active" role="tab" aria-selected="true" onclick="switchSettingsTab('workers', this)">الموظفون</button>
+                    <button role="tab" aria-selected="false" onclick="switchSettingsTab('contact', this)">الاتصال</button>
+                    <button role="tab" aria-selected="false" onclick="switchSettingsTab('appearance', this)">المظهر</button>
+                    <button role="tab" aria-selected="false" onclick="switchSettingsTab('system', this)">النظام</button>
+                </div>
+
+                <div id="settings-panel-workers" class="settings-panel">
+                    <h3 id="worker-form-title">إضافة موظف جديد</h3>
+                    <div id="owner-only-settings" style="display:grid; gap:10px;">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div>
+                                <label class="field-label" for="worker-name">اسم العامل <span class="req">*</span></label>
+                                <input type="text" id="worker-name" placeholder="اسم العامل" autocomplete="off">
+                                <div id="worker-name-error" class="field-error"></div>
+                            </div>
+                            <div>
+                                <label class="field-label" for="worker-pin">الرمز السري <span class="req">*</span></label>
+                                <input type="password" id="worker-pin" placeholder="••••">
+                                <div id="worker-pin-error" class="field-error"></div>
+                            </div>
+                        </div>
+                        <label style="display:flex;gap:8px;align-items:center;"><input type="checkbox" id="worker-active" checked> الموظف نشط</label>
+                        <div style="margin: 10px 0; display:grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap:8px; border:1px solid var(--line); border-radius:10px; padding:12px; background:#fbfcfe;">
+                            <label><input type="checkbox" class="perm" value="pos"> البيع (POS)</label>
+                            <label><input type="checkbox" class="perm" value="weights"> الأوزان</label>
+                            <label><input type="checkbox" class="perm" value="expenses"> المصروفات</label>
+                            <label><input type="checkbox" class="perm" value="shift"> تقفيل شيفت</label>
+                            <label><input type="checkbox" class="perm" value="add_inv"> إضافة أصناف</label>
+                            <label><input type="checkbox" class="perm" value="edit_inv"> تعديل أصناف</label>
+                            <label><input type="checkbox" class="perm" value="delete_cart"> حذف من السلة</label>
+                            <label><input type="checkbox" class="perm" value="reports"> التقارير</label>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <button class="btn btn-ghost" onclick="toggleAllPerms(true)">تحديد الكل</button>
+                            <button class="btn btn-ghost" onclick="toggleAllPerms(false)">إلغاء الكل</button>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button id="worker-submit" class="btn btn-main" onclick="addWorker()">إضافة الموظف</button>
+                            <button id="worker-cancel" class="btn btn-ghost" onclick="cancelWorkerEdit()" style="display:none;">إلغاء التعديل</button>
+                        </div>
+                    </div>
+                    <hr style="margin:16px 0; border-color:var(--line);">
+                    <div id="workers-list"></div>
+                </div>
+
+                <div id="settings-panel-contact" class="settings-panel" hidden>
+                    <div class="card" style="box-shadow:none; border-style:dashed; margin-bottom:12px;">
+                        <h3>رقم هاتف المالك للواتساب</h3>
+                        <p class="field-hint">يُستخدم لإرسال تقرير تقفيل الشيفت مباشرة إلى المالك. الصيغة الدولية بدون + (مثال 2010...).</p>
+                        <label class="field-label" for="owner-whatsapp-number">رقم الواتساب</label>
+                        <div style="display:flex; gap:8px;">
+                            <input type="tel" id="owner-whatsapp-number" placeholder="مثال: 201012345678" inputmode="numeric" autocomplete="tel" style="direction:ltr; text-align:left;">
+                            <button class="btn btn-main" onclick="saveOwnerWhatsappNumber()">حفظ</button>
+                        </div>
+                        <span id="owner-whatsapp-status" style="margin-top:8px; display:inline-block; color: #0b6d55; font-size:.85rem;"></span>
+                        <div id="owner-whatsapp-error" class="field-error"></div>
+                    </div>
+                    <div class="card" id="owner-pin-settings" style="box-shadow:none; border-style:dashed;">
+                        <h3>تغيير رمز المالك</h3>
+                        <div style="display:grid; gap:10px; max-width:360px;">
+                            <div>
+                                <label class="field-label" for="old-owner-pin">الرمز القديم</label>
+                                <input type="password" id="old-owner-pin" placeholder="••••">
+                            </div>
+                            <div>
+                                <label class="field-label" for="new-owner-pin">الرمز الجديد (≥4 أرقام)</label>
+                                <input type="password" id="new-owner-pin" placeholder="••••">
+                                <div id="owner-pin-change-error" class="field-error"></div>
+                            </div>
+                            <button class="btn btn-main" onclick="changeOwnerPin()" style="justify-self:start;">تحديث رمز المالك</button>
+                            <span id="owner-pin-status" style="color: #0b6d55; font-size:.85rem;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings-panel-appearance" class="settings-panel" hidden>
+                    <h3>المظهر</h3>
+                    <p class="field-hint">اختر مظهر الموقع واحفظه على هذا الجهاز.</p>
+                    <div style="display:flex; gap:10px; margin-top:12px;">
+                        <button id="theme-light-btn" class="btn" type="button" aria-pressed="false" onclick="setTheme('light')"><i class="fa fa-sun"></i> الوضع الفاتح</button>
+                        <button id="theme-dark-btn" class="btn" type="button" aria-pressed="false" onclick="setTheme('dark')"><i class="fa fa-moon"></i> الوضع الداكن</button>
+                    </div>
+                    <p class="field-hint" style="margin-top:10px;">يُراعى تفضيل النظام عند أول زيارة، ثم يُحفظ اختيارك.</p>
+                </div>
+
+                <div id="settings-panel-system" class="settings-panel" hidden>
+                    <div class="card" style="border:1px solid #bbf7d0; background:#f0fdf4; margin-bottom:12px;">
+                        <h3 style="color:#065f46; display:flex; align-items:center; gap:8px;"><i class="fab fa-whatsapp" style="color:#25D366; font-size:1.2em;"></i> الدعم الفني — واتساب</h3>
+                        <p class="field-hint" style="color:#047857;">تواصل مباشرة مع الدعم الفني عبر واتساب للمساعدة والاستفسارات</p>
+                        <a href="https://wa.me/201281338512?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9%20%D9%81%D9%8A%20%D9%86%D8%B8%D8%A7%D9%85%20%D8%B3%D9%88%D8%A8%D8%B1%20%D9%85%D8%A7%D8%B1%D9%83%D8%AA%20%D8%A3%D9%8A%D9%88%D8%A8" target="_blank" rel="noopener noreferrer" class="btn btn-main" style="background:#25D366; border-color:#25D366; color:#fff; display:inline-flex; align-items:center; gap:8px; margin-top:10px; min-height:44px;"><i class="fab fa-whatsapp"></i> تواصل واتساب — ‎+20 128 133 8512</a>
+                        <a href="tel:+201281338512" class="btn btn-ghost" style="margin-top:8px; display:inline-flex; align-items:center; gap:6px;"><i class="fa fa-phone"></i> اتصال: ‎+20 128 133 8512</a>
+                    </div>
+                    <div class="card danger-zone">
+                        <h3 style="color:var(--danger-color)">بيانات النظام</h3>
+                        <p class="field-hint" style="color:var(--danger-color)">إجراء خطير — يحذف كل شيء بلا رجعة. يُطلب رمز المالك وكتابة DELETE.</p>
+                        <button class="btn btn-danger" onclick="openFactoryReset()"><i class="fa fa-trash"></i> تصفير كافة البيانات (ضبط مصنع)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // --- Helpers: Toast & Dialog ---
+        function showToast(message, type='info', ms=3200) {
+            const c = document.getElementById('toast-container');
+            const el = document.createElement('div');
+            el.className = 'toast toast-' + type;
+            el.setAttribute('role','status');
+            const icon = type==='success' ? 'fa-check-circle' : type==='error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            el.innerHTML = `<i class="fa ${icon}"></i><span>${escapeHtml(message)}</span>`;
+            c.appendChild(el);
+            setTimeout(()=> { el.style.animation='toastOut .3s ease forwards'; setTimeout(()=> el.remove(), 300); }, ms);
+        }
+        function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+        function openDialog(id){ const el=document.getElementById(id); el.hidden=false; document.body.style.overflow='hidden'; const focusable=el.querySelector('input,select,button'); if(focusable) setTimeout(()=>focusable.focus(),50); el.addEventListener('click', onDialogBackdrop); document.addEventListener('keydown', onDialogEsc); }
+        function closeDialog(id){ const el=document.getElementById(id); if(!el) return; el.hidden=true; document.body.style.overflow=''; el.removeEventListener('click', onDialogBackdrop); document.removeEventListener('keydown', onDialogEsc); }
+        function onDialogBackdrop(e){ if(e.target.classList.contains('app-dialog')){ e.currentTarget.hidden=true; document.body.style.overflow=''; } }
+        function onDialogEsc(e){ if(e.key==='Escape'){ document.querySelectorAll('.app-dialog:not([hidden])').forEach(d=>{ d.hidden=true; }); document.body.style.overflow=''; } }
+        function setFieldError(inputId, errorId, msg){ const inp=document.getElementById(inputId); const err=document.getElementById(errorId); if(msg){ if(inp) inp.classList.add('input-error'); if(err){ err.textContent=msg; err.classList.add('visible'); } } else { if(inp) inp.classList.remove('input-error'); if(err){ err.textContent=''; err.classList.remove('visible'); } } }
+        function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+        // Fetch with timeout helper — fixes hanging create/login (user reports "timeout error")
+        function fetchWithTimeout(url, options={}, ms=8000){
+            const controller = new AbortController();
+            const id = setTimeout(()=> controller.abort(), ms);
+            const signal = controller.signal;
+            // merge signal (AbortSignal.timeout not supported in all browsers)
+            const opts = { ...options, signal };
+            return fetch(url, opts).finally(()=> clearTimeout(id));
+        }
+        function isTimeoutError(e){ return e && (e.name==='AbortError' || String(e.message||'').toLowerCase().includes('abort') || String(e.message||'').toLowerCase().includes('timeout')); }
+
+        // Owner PIN promise-based dialog
+        let _ownerPinResolve=null;
+        let _ownerPinValueResolve=null;
+        function requestOwnerPin(){
+            return new Promise(resolve=>{
+                _ownerPinResolve=resolve;
+                document.getElementById('owner-pin-input').value='';
+                setFieldError('owner-pin-input','owner-pin-error','');
+                openDialog('owner-pin-modal');
+            });
+        }
+        function requestOwnerPinValue(){
+            return new Promise(resolve=>{
+                _ownerPinValueResolve=resolve;
+                _ownerPinResolve=null;
+                document.getElementById('owner-pin-input').value='';
+                setFieldError('owner-pin-input','owner-pin-error','');
+                openDialog('owner-pin-modal');
+            });
+        }
+        async function closeOwnerPinDialog(confirmed){
+            const val=document.getElementById('owner-pin-input').value.trim();
+            // Value-mode: return PIN string directly (for whatsapp save fallback)
+            if(_ownerPinValueResolve){
+                if(!confirmed){ closeDialog('owner-pin-modal'); const r=_ownerPinValueResolve; _ownerPinValueResolve=null; r(null); return; }
+                if(!val){ setFieldError('owner-pin-input','owner-pin-error','أدخل الرمز'); return; }
+                // For admin users, accept PIN without server check (will be validated server-side)
+                if(currentUser && currentUser.role==='admin'){
+                    closeDialog('owner-pin-modal'); const r=_ownerPinValueResolve; _ownerPinValueResolve=null; r(val); return;
+                }
+                try{
+                    const res=await fetchWithTimeout('/api/worker-auth',{method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({action:'owner-login', ownerPin: val, password: val, username:'المالك'})}, 6000);
+                    const j=await res.json().catch(()=>({}));
+                    if(!res.ok || !j.ok){ setFieldError('owner-pin-input','owner-pin-error', j.error || 'الرمز غير صحيح'); return; }
+                    closeDialog('owner-pin-modal'); const r=_ownerPinValueResolve; _ownerPinValueResolve=null; r(val);
+                }catch(e){
+                    if(isTimeoutError(e)) setFieldError('owner-pin-input','owner-pin-error','انتهت مهلة التحقق — حاول مرة أخرى');
+                    else setFieldError('owner-pin-input','owner-pin-error','تعذر التحقق من الرمز');
+                    return;
+                }
+                return;
+            }
+            if(confirmed){
+                if(!val){ setFieldError('owner-pin-input','owner-pin-error','أدخل الرمز'); return; }
+                // For admin users, local check is enough, but verify via server as source of truth
+                if(currentUser && currentUser.role==='admin'){
+                    closeDialog('owner-pin-modal');
+                    if(_ownerPinResolve) _ownerPinResolve(true);
+                    _ownerPinResolve=null;
+                    return;
+                }
+                // Verify owner PIN via server (hashed comparison) — with timeout to avoid hang
+                try{
+                    const res=await fetchWithTimeout('/api/worker-auth',{method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({action:'owner-login', ownerPin: val, password: val, username:'المالك'})}, 6000);
+                    const j=await res.json().catch(()=>({}));
+                    if(!res.ok || !j.ok){ setFieldError('owner-pin-input','owner-pin-error', j.error || 'الرمز غير صحيح'); return; }
+                    closeDialog('owner-pin-modal');
+                    if(_ownerPinResolve) _ownerPinResolve(true);
+                }catch(e){ 
+                    if(isTimeoutError(e)) setFieldError('owner-pin-input','owner-pin-error','انتهت مهلة التحقق — حاول مرة أخرى');
+                    else setFieldError('owner-pin-input','owner-pin-error','تعذر التحقق من الرمز'); 
+                    return; 
+                }
+            } else { closeDialog('owner-pin-modal'); if(_ownerPinResolve) _ownerPinResolve(false); }
+            _ownerPinResolve=null;
+        }
+        let _confirmResolve=null;
+        function requestConfirm(title, message, okText='تأكيد', isDanger=false){
+            return new Promise(resolve=>{
+                _confirmResolve=resolve;
+                document.getElementById('confirm-title').textContent=title;
+                document.getElementById('confirm-message').textContent=message;
+                const btn=document.getElementById('confirm-ok-btn');
+                btn.textContent=okText;
+                btn.className = isDanger ? 'btn btn-danger' : 'btn btn-main';
+                openDialog('confirm-modal');
+            });
+        }
+        function closeConfirm(ok){ closeDialog('confirm-modal'); if(_confirmResolve) _confirmResolve(ok); _confirmResolve=null; }
+
+        // --- Supabase ---
+        let supabaseClient;
+        let cloudChannel;
+        async function initSupabase() {
+            const FALLBACK_URL = 'https://jomgksetqqxyuarwhprq.supabase.co';
+            const FALLBACK_KEY = 'sb_publishable_hje37SMrZE0QrrECLyEq9A_Qvfpc6tV';
+            try {
+                const response = await fetchWithTimeout('/api/config', { cache: 'no-store', headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' } }, 5000);
+                if (!response.ok) throw new Error('config http ' + response.status);
+                const config = await response.json();
+                const url = (config.supabaseUrl || '').trim() || FALLBACK_URL;
+                const key = (config.supabaseKey || '').trim() || FALLBACK_KEY;
+                if (!url || !key) throw new Error('Supabase configuration missing');
+                supabaseClient = window.supabase.createClient(url, key);
+                // loadDB with 6s guard — never block init forever (was causing "timeout" hang)
+                await Promise.race([
+                    loadDBFromCloud(),
+                    new Promise((_, rej)=> setTimeout(()=> rej(new Error('loadDB timeout')), 6000))
+                ]).catch(e=> console.warn('[init] loadDB timeout/failed', e.message||e));
+                subscribeToCloudState();
+                showToast('تم الاتصال بقاعدة البيانات', 'success', 1800);
+            } catch (error) {
+                console.error('Supabase init failed', error && error.message);
+                if (isTimeoutError(error)) showToast('انتهت مهلة الاتصال — الشبكة بطيئة، سيتم المحاولة بخادم بديل', 'error', 4000);
+                try {
+                    supabaseClient = window.supabase.createClient(FALLBACK_URL, FALLBACK_KEY);
+                    await Promise.race([
+                        loadDBFromCloud(),
+                        new Promise((_, rej)=> setTimeout(()=> rej(new Error('loadDB fallback timeout')), 6000))
+                    ]).catch(e=> console.warn('[init fallback] loadDB failed', e.message||e));
+                    subscribeToCloudState();
+                    showToast('تم الاتصال (fallback) — تحقق من ملف .env.local', 'info', 4000);
+                    return;
+                } catch (e2) {
+                    console.error('Fallback also failed');
+                }
+                showToast('فشل الاتصال بقاعدة البيانات. تأكد من تشغيل npm run dev وأعد تحميل الصفحة (Ctrl+F5).', 'error', 6000);
+            }
+        }
+        let db = { ownerPin:"0000", ownerWhatsappNumber:"", workers:[], products:[], sales:[], expenses:[], shiftClosings:[], currentShiftSales:0, currentShiftInvoices:0, currentShiftItems:0, currentShiftItemDetails:{} };
+        function ensureProductIds(){ db.products=(db.products||[]).map(p=>({...p, id:p.id||p.barcode||`product-${Date.now()}-${Math.random().toString(36).slice(2)}`})); }
+        ensureProductIds();
+        let currentUser=null;
+        let cart=[];
+
+        async function saveDB() {
+            // Post-fix: direct Supabase upserts are blocked by RLS (worker cannot write). Use server APIs.
+            try {
+                renderInventory(); renderWeightProducts(); renderWorkers(); renderShiftStats(); renderExpensesHistory();
+                showToast('تم التحديث — الكتابة المباشرة معطلة لحماية البيانات','success',2200);
+            } catch(error){ console.error('Save failed:',error); showToast('تعذر الحفظ: '+(error.message||''),'error'); }
+        }
+        async function loadDBFromCloud(){
+            if(!supabaseClient) return;
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                const isAuthed = !!session;
+                if (!isAuthed) {
+                    try {
+                        const res = await fetchWithTimeout('/api/products', { cache: 'no-store' }, 5000);
+                        if (res.ok) {
+                            const j = await res.json();
+                            const pub = j.products || [];
+                            db.products = pub.map(p=>({id:p.id,name:p.name,barcode:p.barcode,buyPrice:Number(p.buy_price)||0,sellPrice:Number(p.sell_price)||0,qty:Number(p.quantity)||0,type:p.unit_type}));
+                        }
+                    } catch(e){ /* silent anon catalog fetch failed */ }
+                    renderWorkers(); renderInventory(); renderWeightProducts(); updateWeightDetails(); renderCart(); renderShiftStats(); renderExpensesHistory();
+                    return;
+                }
+                // Guard each query with timeout — previous version hung forever if Supabase slow (reported as "timeout")
+                function qWithTimeout(p, ms, label){
+                    return Promise.race([
+                        p,
+                        new Promise((_, rej)=> setTimeout(()=> rej(new Error(label + ' timeout')), ms))
+                    ]);
+                }
+                const [rProducts, rSales, rExpenses, rClosings, rUsers] = await Promise.race([
+                    Promise.all([
+                        qWithTimeout(supabaseClient.from('products').select('*').order('name'), 6000, 'products'),
+                        qWithTimeout(supabaseClient.from('sales').select('*').order('created_at',{ascending:false}), 6000, 'sales'),
+                        qWithTimeout(supabaseClient.from('expenses').select('*').order('created_at',{ascending:false}), 6000, 'expenses'),
+                        qWithTimeout(supabaseClient.from('shift_closings').select('*').order('closed_at',{ascending:false}), 6000, 'shift_closings'),
+                        qWithTimeout(supabaseClient.from('users').select('id, username, display_name, role, permissions, active').order('display_name'), 6000, 'users'),
+                    ]),
+                    new Promise((_, rej)=> setTimeout(()=> rej(new Error('loadDB aggregate timeout')), 7000))
+                ]);
+                // Surface load errors once without flooding (infinite recursion fix requires schema patch — see supabase-schema.sql)
+                [rProducts,rSales,rExpenses,rClosings,rUsers].forEach((r,i)=>{
+                    if (r.error) {
+                        const t = ['products','sales','expenses','shift_closings','users'][i];
+                        const msg = r.error.message || String(r.error);
+                        // "infinite recursion" means schema policies need patch — advise once
+                        if (msg.includes('infinite recursion')) {
+                            console.warn('[db] RLS recursion — apply supabase-schema.sql fix');
+                        } else {
+                            console.warn('[db] '+t+' load warning');
+                        }
+                    }
+                });
+                const products = rProducts.data, sales = rSales.data, expenses = rExpenses.data, closings = rClosings.data, users = rUsers.data;
+                // Determine if current session is admin before touching RLS-protected settings (admin only)
+                let settings = null;
+                try {
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    const isAdmin = (users||[]).find(u=>u.id===user?.id)?.role==='admin' || currentUser?.role==='admin';
+                    if (isAdmin || !user) {
+                        const rSettings = await Promise.race([
+                            supabaseClient.from('settings').select('*'),
+                            new Promise((_, rej)=> setTimeout(()=> rej(new Error('settings timeout')), 4000))
+                        ]).catch(e=> ({ error: e, data: null }));
+                        if (rSettings.error) {
+                            if (isAdmin && !String(rSettings.error.message||'').includes('timeout')) console.warn('[db] settings load warning');
+                        } else {
+                            settings = rSettings.data;
+                        }
+                    }
+                } catch(_) { /* ignore */ }
+                db.products=(products||[]).map(p=>({id:p.id,name:p.name,barcode:p.barcode,buyPrice:Number(p.buy_price)||0,sellPrice:Number(p.sell_price)||0,qty:Number(p.quantity)||0,type:p.unit_type}));
+                db.sales=sales||[]; db.expenses=expenses||[]; db.shiftClosings=closings||[];
+                db.workers=(users||[]).filter(u=>u.role==='worker' && u.active!==false).map(u=>({...u, name:u.display_name||u.username, permissions:u.permissions||[]}));
+                if(settings){ const pinSetting=settings.find(s=>s.key==='owner_pin'); if(pinSetting && pinSetting.value && pinSetting.value.pin) db.ownerPin=pinSetting.value.pin; const whatsappSetting=settings.find(s=>s.key==='owner_whatsapp'); if(whatsappSetting && whatsappSetting.value) db.ownerWhatsappNumber=whatsappSetting.value.number || whatsappSetting.value; }
+                renderWorkers(); renderInventory(); renderWeightProducts(); updateWeightDetails(); renderCart(); renderShiftStats(); renderExpensesHistory();
+            } catch (e) {
+                console.warn('[db] loadDBFromCloud failed', e && e.message || e);
+                if (String(e.message||'').includes('timeout')) showToast('تباطؤ في تحميل البيانات — الشبكة بطيئة، حاول تحديث الصفحة','info',4000);
+                // Don't throw — keep app usable pre-login.
+            }
+        }
+        async function persistProducts(){ return saveDB(); }
+        async function authHeaders(){
+            const headers={'content-type':'application/json'};
+            try{
+                if(supabaseClient){
+                    const {data:{session}} = await supabaseClient.auth.getSession();
+                    if(session?.access_token) headers.authorization = `Bearer ${session.access_token}`;
+                }
+            }catch(e){}
+            return headers;
+        }
+        function subscribeToCloudState(){
+            try { if(cloudChannel) cloudChannel.unsubscribe(); } catch(e){}
+            cloudChannel=supabaseClient.channel('business-live-updates');
+            let pending=false;
+            const debounced=debounce(()=>{ if(!pending){ pending=true; loadDBFromCloud().finally(()=> pending=false); } }, 3000);
+            ['products','sales','expenses','shift_closings','users'].forEach(table=> cloudChannel.on('postgres_changes',{event:'*',schema:'public',table}, debounced));
+            cloudChannel.subscribe(status=>{
+                if(status==='CHANNEL_ERROR' || status==='TIMED_OUT'){
+                    console.warn('[realtime] channel error', status, 'retrying in 5s');
+                    setTimeout(()=>{ try{ subscribeToCloudState(); }catch(e){} }, 5000);
+                }
+            });
+            window.addEventListener('beforeunload',()=>{ try{ cloudChannel.unsubscribe(); }catch(e){} });
+        }
+
+        // --- Auth — single-admin gate ---
+        let signupAllowed = null; // null=unknown, true=first account, false=admin already exists
+        function applySignupGate(allowed){
+            signupAllowed = !!allowed;
+            const tab=document.getElementById('auth-tab-signup');
+            const blocked=document.getElementById('signup-blocked');
+            const btn=document.getElementById('signup-btn');
+            const hint=document.getElementById('signup-hint');
+            if(signupAllowed){
+                if(tab){ tab.disabled=false; tab.style.opacity=''; tab.style.cursor=''; tab.title=''; }
+                if(blocked) blocked.hidden=true;
+                if(btn){ btn.disabled=false; btn.style.opacity=''; }
+                if(hint) hint.hidden=false;
+            } else {
+                if(tab){ tab.disabled=true; tab.style.opacity='0.45'; tab.style.cursor='not-allowed'; tab.title='تم إنشاء حساب المسؤول بالفعل'; }
+                if(blocked) blocked.hidden=false;
+                if(btn){ btn.disabled=true; btn.style.opacity='0.55'; }
+                // if user was on signup tab, bounce to login
+                const signupPanel=document.getElementById('auth-signup-panel');
+                if(signupPanel && !signupPanel.hidden) switchAuthTab('login');
+            }
+            // also update login panel switch link visibility
+            const loginSwitch=document.querySelector('#auth-login-panel .auth-switch');
+            if(loginSwitch) loginSwitch.style.display = signupAllowed ? '' : 'none';
+        }
+        async function checkSignupAvailability(){
+            try{
+                const res=await fetchWithTimeout('/api/worker-auth', { cache:'no-store', headers:{'Cache-Control':'no-cache'} }, 5000);
+                if(!res.ok) throw new Error('status '+res.status);
+                const j=await res.json();
+                const allowed = !!(j.canSignup ?? j.allowed);
+                applySignupGate(allowed);
+                return allowed;
+            }catch(e){
+                if(isTimeoutError(e)) console.warn('[auth] checkSignupAvailability timeout');
+                else console.warn('[auth] checkSignupAvailability failed', e);
+                return null;
+            }
+        }
+        function switchAuthTab(which){
+            if(which==='signup' && signupAllowed===false){
+                showToast('تم إنشاء حساب المسؤول بالفعل — سجّل دخولك كمسؤول لإنشاء حسابات العمال','error',4000);
+                return;
+            }
+            const isLogin = which==='login';
+            document.getElementById('auth-login-panel').hidden = !isLogin;
+            document.getElementById('auth-signup-panel').hidden = isLogin;
+            const tL=document.getElementById('auth-tab-login'), tS=document.getElementById('auth-tab-signup');
+            tL.classList.toggle('active', isLogin); tL.setAttribute('aria-selected', String(isLogin));
+            tS.classList.toggle('active', !isLogin); tS.setAttribute('aria-selected', String(!isLogin));
+            // clear errors
+            ['login-name-error','login-pin-error','signup-name-error','signup-pin-error','signup-pin-confirm-error'].forEach(id=> setFieldError('',id,''));
+            ['login-error','signup-error'].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display='none'; });
+            setTimeout(()=> { const focusId=isLogin?'login-name':'signup-name'; document.getElementById(focusId)?.focus(); }, 50);
+        }
+        function toggleLoginPin(){ const inp=document.getElementById('login-pin'); const eye=document.getElementById('pin-eye'); if(inp.type==='password'){ inp.type='text'; eye.className='fa fa-eye-slash'; } else { inp.type='password'; eye.className='fa fa-eye'; } }
+        function toggleSignupPin(inputId, eyeId){ const inp=document.getElementById(inputId); const eye=document.getElementById(eyeId); if(!inp||!eye) return; if(inp.type==='password'){ inp.type='text'; eye.className='fa fa-eye-slash'; } else { inp.type='password'; eye.className='fa fa-eye'; } }
+        async function handleSignup(){
+            const name=document.getElementById('signup-name').value.trim();
+            const pin=document.getElementById('signup-pin').value.trim();
+            const confirm=document.getElementById('signup-pin-confirm').value.trim();
+            let hasError=false;
+            if(!name || name.length<2){ setFieldError('signup-name','signup-name-error','أدخل اسم مستخدم (حرفان على الأقل)'); hasError=true; } else setFieldError('signup-name','signup-name-error','');
+            if(!pin || pin.length<6){ setFieldError('signup-pin','signup-pin-error','الرمز يجب أن يكون 6 أحرف على الأقل'); hasError=true; } else if(/^(0+|1+|123456|000000)$/.test(pin)){ setFieldError('signup-pin','signup-pin-error','رمز ضعيف — اختر رمزاً أقوى'); hasError=true; } else setFieldError('signup-pin','signup-pin-error','');
+            if(!confirm){ setFieldError('signup-pin-confirm','signup-pin-confirm-error','أكد الرمز السري'); hasError=true; } else if(pin!==confirm){ setFieldError('signup-pin-confirm','signup-pin-confirm-error','الرمزان غير متطابقين'); hasError=true; } else setFieldError('signup-pin-confirm','signup-pin-confirm-error','');
+            if(hasError) return;
+            const btn=document.getElementById('signup-btn'); const txt=document.getElementById('signup-btn-text'); const spin=document.getElementById('signup-spinner'); const errBox=document.getElementById('signup-error');
+            btn.disabled=true; txt.textContent='جاري الإنشاء...'; spin.style.display='inline-block'; errBox.style.display='none';
+            try{
+                if(!supabaseClient){ errBox.textContent='قاعدة البيانات غير جاهزة — انتظر ثانية وحاول مجدداً'; errBox.style.display='block'; return; }
+                const response=await fetchWithTimeout('/api/worker-auth',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'signup', username:name, password:pin})}, 10000);
+                const result=await response.json().catch(()=>({ error: 'استجابة غير صالحة' }));
+                if(!response.ok || !result.ok){
+                    const msg = result.error || (response.status===504 ? 'انتهت مهلة الخادم — حاول مرة أخرى' : 'تعذر إنشاء الحساب');
+                    errBox.textContent=msg; errBox.style.display='block'; showToast(msg,'error'); return;
+                }
+                if(result.access_token && result.refresh_token){
+                    try{ await supabaseClient.auth.setSession({access_token:result.access_token, refresh_token: result.refresh_token}); }catch(e){ console.warn('setSession failed', e.message||e); }
+                } else if(result.access_token){
+                    console.warn('signup missing refresh_token — skipping setSession');
+                }
+                currentUser={...result.user, name:result.user.display_name||result.user.username||name, permissions:result.user.permissions||[]};
+                showToast('تم إنشاء الحساب بنجاح — مرحباً '+currentUser.name,'success');
+                // Non-blocking load — don't let slow DB hide success (was causing perceived timeout)
+                loginSuccess();
+                loadDBFromCloud().catch(e=> console.warn('post-signup load failed', e.message));
+                ['signup-name','signup-pin','signup-pin-confirm'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+            } catch(error){
+                const msg = isTimeoutError(error) ? 'انتهت مهلة الاتصال — الشبكة بطيئة، حاول مرة أخرى' : 'تعذر الاتصال بخدمة إنشاء الحساب. حاول مرة أخرى.';
+                errBox.textContent=msg; errBox.style.display='block'; showToast(msg,'error');
+            }
+            finally { btn.disabled=false; txt.textContent='إنشاء حساب المسؤول'; spin.style.display='none'; if(!signupAllowed) checkSignupAvailability(); }
+        }
+        async function handleLogin(){
+            const name=document.getElementById('login-name').value.trim();
+            const pin=document.getElementById('login-pin').value.trim();
+            let hasError=false;
+            if(!name){ setFieldError('login-name','login-name-error','أدخل اسم المستخدم'); hasError=true; } else setFieldError('login-name','login-name-error','');
+            if(!pin){ setFieldError('login-pin','login-pin-error','أدخل الرمز السري'); hasError=true; } else setFieldError('login-pin','login-pin-error','');
+            if(hasError) return;
+            const btn=document.getElementById('login-btn'); const txt=document.getElementById('login-btn-text'); const spin=document.getElementById('login-spinner'); const errBox=document.getElementById('login-error');
+            btn.disabled=true; txt.textContent='جاري الدخول...'; spin.style.display='inline-block'; errBox.style.display='none';
+            try{
+                if(!supabaseClient){ errBox.textContent='قاعدة البيانات غير جاهزة — انتظر ثانية وحاول مجدداً'; errBox.style.display='block'; return; }
+                const response=await fetchWithTimeout('/api/worker-auth',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'login', username:name, password:pin})}, 10000);
+                const result=await response.json().catch(()=>({ error: 'استجابة غير صالحة' }));
+                if(!response.ok || !result.ok || !result.user){
+                    const msg = result.error || (response.status===504 ? 'انتهت مهلة الخادم — حاول مرة أخرى' : 'بيانات الدخول غير صحيحة');
+                    errBox.textContent=msg; errBox.style.display='block'; showToast(msg,'error'); return;
+                }
+                if(result.access_token && result.refresh_token){
+                    try{ await supabaseClient.auth.setSession({access_token:result.access_token, refresh_token: result.refresh_token}); }catch(e){ console.warn('setSession failed', e.message||e); }
+                } else if(result.access_token){
+                    console.warn('login missing refresh_token — skipping setSession');
+                }
+                currentUser={...result.user, name:result.user.display_name||result.user.username||result.user.name||name, permissions:result.user.permissions||[]};
+                showToast('تم تسجيل الدخول بنجاح','success');
+                // Non-blocking load — don't let slow DB feel like login timeout
+                loginSuccess();
+                loadDBFromCloud().catch(e=> console.warn('post-login load failed', e.message));
+            } catch(error){
+                const msg = isTimeoutError(error) ? 'انتهت مهلة الاتصال — الشبكة بطيئة، حاول مرة أخرى' : 'تعذر الاتصال بخدمة الدخول. حاول مرة أخرى.';
+                errBox.textContent=msg; errBox.style.display='block'; showToast(msg,'error');
+            }
+            finally { btn.disabled=false; txt.textContent='دخول'; spin.style.display='none'; }
+        }
+        async function loginSuccess(){ document.getElementById('login-modal').style.display='none'; document.getElementById('current-user-display').innerText=`المستخدم: ${currentUser.name}`; showScreen('pos');
+            // Fire-and-forget with timeout guard — previous await here caused login spinner to hang
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) {
+                    Promise.race([
+                        loadDBFromCloud(),
+                        new Promise((_, rej)=> setTimeout(()=> rej(new Error('loginSuccess load timeout')), 6000))
+                    ]).catch(e=> console.warn('loginSuccess load timeout/failed', e.message||e));
+                }
+            } catch(e){ console.warn('loginSuccess getSession failed', e.message||e); }
+        }
+        async function logout(){ if(window.__loggingOut) return; window.__loggingOut=true; try{ if(supabaseClient) await supabaseClient.auth.signOut(); }catch(e){} currentUser=null; try{ if(cloudChannel) cloudChannel.unsubscribe(); }catch(e){} location.reload(); }
+        function hasPermission(perm){ if(!currentUser) return false; if(currentUser.role==='admin' || (currentUser.permissions||[]).includes('all')) return true; return (currentUser.permissions||[]).includes(perm); }
+        async function requireOwnerPinOrAdmin(){ if(currentUser && currentUser.role==='admin') return true; return await requestOwnerPin(); }
+
+        // --- Navigation ---
+        function showScreen(screenId){
+            // permission guards with async owner PIN for settings
+            const go=async()=>{
+                if(screenId==='settings' && currentUser && currentUser.role!=='admin'){ const ok=await requestOwnerPin(); if(!ok) return; }
+                if(screenId==='pos' && !hasPermission('pos')){ showToast('لا تملك صلاحية البيع','error'); return; }
+                if(screenId==='expenses' && !hasPermission('expenses')){ showToast('لا تملك صلاحية المصروفات','error'); return; }
+                document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active-screen'));
+                document.getElementById('screen-'+screenId).classList.add('active-screen');
+                document.querySelectorAll('.nav-links button[id^="nav-"]').forEach(b=> b.removeAttribute('aria-current'));
+                const navBtn=document.getElementById('nav-'+screenId); if(navBtn) navBtn.setAttribute('aria-current','page');
+                if(screenId==='inventory') renderInventory();
+                if(screenId==='settings') renderWorkers();
+                if(screenId==='pos') { renderShiftStats(); debouncedSearch(); }
+                if(screenId==='expenses') renderExpensesHistory();
+            }; go();
+        }
+        function resetForm(formId, firstFieldId){ const form=document.getElementById(formId); if(form) form.querySelectorAll('input,select,textarea').forEach(f=>{ if(f.id==='p-type') f.value='piece'; else if(f.type!=='checkbox'&&f.type!=='radio') f.value=''; }); const first=document.getElementById(firstFieldId); if(first) setTimeout(()=>first.focus(),0); }
+        function resetInventoryForm(){ ['p-name','p-barcode','p-buy','p-sell','p-qty'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; }); ['p-name-error','p-barcode-error','p-qty-error'].forEach(id=> setFieldError('',id,'')); document.getElementById('p-type').value='piece'; document.getElementById('p-name').focus(); }
+        function switchSettingsTab(panel, btn){ document.querySelectorAll('.settings-panel').forEach(p=> p.hidden=true); document.getElementById('settings-panel-'+panel).hidden=false; document.querySelectorAll('.settings-tabs button').forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false'); }); btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
+        function toggleAllPerms(v){ document.querySelectorAll('.perm').forEach(cb=> cb.checked=v); }
+
+        // --- Inventory ---
+        async function addNewProduct(){
+            if(!hasPermission('add_inv')){ showToast('لا تملك صلاحية الإضافة','error'); return; }
+            const name=document.getElementById('p-name').value.trim();
+            const barcodeRaw=document.getElementById('p-barcode').value.trim();
+            const buy=Number(document.getElementById('p-buy').value)||0;
+            const sell=Number(document.getElementById('p-sell').value)||0;
+            const qty=Number(document.getElementById('p-qty').value);
+            const type=document.getElementById('p-type').value;
+            let ok=true;
+            if(!name){ setFieldError('p-name','p-name-error','أدخل اسم المنتج'); ok=false; } else setFieldError('p-name','p-name-error','');
+            if(type==='piece' && !barcodeRaw){ setFieldError('p-barcode','p-barcode-error','الباركود مطلوب لمنتجات القطع'); ok=false; } else setFieldError('p-barcode','p-barcode-error','');
+            if(!Number.isFinite(qty) || qty<=0){ setFieldError('p-qty','p-qty-error','أدخل كمية صحيحة > 0'); ok=false; } else setFieldError('p-qty','p-qty-error','');
+            if(sell<=0){ showToast('سعر البيع يجب أن يكون أكبر من صفر','error'); ok=false; }
+            if(!ok) return;
+            const barcode = barcodeRaw || `W-${Date.now()}`;
+            if(db.products.some(p=> String(p.barcode)===String(barcode) && barcodeRaw)){ showToast('الباركود موجود مسبقاً','error'); return; }
+            // SECURE: via server API (RLS enforces admin)
+            const headers=await authHeaders();
+            const res=await fetch('/api/products',{method:'POST', headers, body: JSON.stringify({ name, barcode, buyPrice: buy, sellPrice: sell, qty, type })});
+            const j=await res.json().catch(()=>({}));
+            if(!res.ok){ showToast(j.error||'تعذر إضافة المنتج','error'); return; }
+            await loadDBFromCloud();
+            resetInventoryForm();
+            showToast('تمت الإضافة بنجاح','success');
+        }
+        let inventoryFilter='piece';
+        let inventoryStockFilter='all';
+        function filterInventoryTab(type, button){
+            inventoryFilter=type;
+            document.querySelectorAll('.inventory-tab').forEach(tab=>{ tab.classList.remove('active','btn-main'); tab.setAttribute('aria-selected','false'); });
+            button.classList.add('active','btn-main'); button.setAttribute('aria-selected','true');
+            renderInventory();
+        }
+        function filterStockTab(type, button){
+            inventoryStockFilter=type;
+            document.querySelectorAll('.stock-tab').forEach(tab=>{ tab.classList.remove('active','btn-main'); tab.setAttribute('aria-selected','false'); });
+            button.classList.add('active','btn-main'); button.setAttribute('aria-selected','true');
+            renderInventory();
+        }
+        function renderInventory(){
+            const list=document.getElementById('inventory-list');
+            const empty=document.getElementById('inventory-empty');
+            const search=(document.getElementById('inventory-search')?.value||'').trim().toLowerCase();
+            const stockFilter=inventoryStockFilter;
+            let filtered=db.products.filter(p=> (p.type||'piece')===inventoryFilter);
+            if(search) filtered=filtered.filter(p=> String(p.name||'').toLowerCase().includes(search) || String(p.barcode||'').toLowerCase().includes(search));
+            if(stockFilter==='available') filtered=filtered.filter(p=> Number(p.qty) >= 5);
+            if(stockFilter==='low') filtered=filtered.filter(p=> Number(p.qty) < 5);
+            // update stock tab counts
+            const typeFiltered=db.products.filter(p=> (p.type||'piece')===inventoryFilter);
+            const allCount=typeFiltered.length;
+            const availCount=typeFiltered.filter(p=> Number(p.qty) >= 5).length;
+            const lowCount=typeFiltered.filter(p=> Number(p.qty) < 5).length;
+            const elAll=document.getElementById('stock-count-all');
+            const elAvail=document.getElementById('stock-count-available');
+            const elLow=document.getElementById('stock-count-low');
+            if(elAll) elAll.textContent=`(${allCount})`;
+            if(elAvail) elAvail.textContent=`(${availCount})`;
+            if(elLow) elLow.textContent=`(${lowCount})`;
+            list.innerHTML='';
+            if(filtered.length===0){ empty.classList.remove('hidden'); return; } else empty.classList.add('hidden');
+            filtered.forEach(p=>{
+                const index=db.products.indexOf(p);
+                const qty=Number(p.qty)||0;
+                let badge='badge-ok'; let badgeText='متوفر';
+                if(qty<=0){ badge='badge-danger'; badgeText='نفد'; } else if(qty<5){ badge='badge-warn'; badgeText='ناقص'; }
+                const rowClass = qty<5 ? 'low-stock' : '';
+                list.innerHTML+=`<tr class="${rowClass}"><td><code>${escapeHtml(p.barcode||'-')}</code></td><td>${escapeHtml(p.name)}</td><td>${Number(p.buyPrice)? Number(p.buyPrice).toFixed(2):'-'}</td><td>${Number(p.sellPrice)||0}</td><td><span class="badge ${badge}">${badgeText}</span> ${qty} ${p.type==='weight'?'كجم':'قطعة'}</td><td><button onclick="openEditProduct(${index})" class="btn btn-secondary" style="padding:7px 12px; font-size:.85rem;"><i class="fa fa-edit"></i> تعديل</button></td></tr>`;
+            });
+        }
+        function openEditProduct(index){
+            if(!hasPermission('edit_inv')){ requestOwnerPin().then(ok=>{ if(ok) doOpenEdit(index); }); return; }
+            doOpenEdit(index);
+        }
+        function doOpenEdit(index){
+            const p=db.products[index]; if(!p) return;
+            document.getElementById('edit-product-index').value=index;
+            document.getElementById('edit-p-name').value=p.name||'';
+            document.getElementById('edit-p-barcode').value=p.barcode||'';
+            document.getElementById('edit-p-buy').value=Number(p.buyPrice)||0;
+            document.getElementById('edit-p-sell').value=Number(p.sellPrice)||0;
+            document.getElementById('edit-p-type').value=p.type||'piece';
+            document.getElementById('edit-p-qty').value=Number(p.qty)||0;
+            setFieldError('edit-p-name','edit-p-name-error',''); setFieldError('edit-p-qty','edit-p-qty-error','');
+            openDialog('edit-product-modal');
+        }
+        async function saveEditedProduct(){
+            const index=Number(document.getElementById('edit-product-index').value);
+            const p=db.products[index]; if(!p) return;
+            const name=document.getElementById('edit-p-name').value.trim();
+            const barcode=document.getElementById('edit-p-barcode').value.trim();
+            const buy=Number(document.getElementById('edit-p-buy').value)||0;
+            const sell=Number(document.getElementById('edit-p-sell').value)||0;
+            const type=document.getElementById('edit-p-type').value;
+            const qty=Number(document.getElementById('edit-p-qty').value);
+            let ok=true;
+            if(!name){ setFieldError('edit-p-name','edit-p-name-error','الاسم مطلوب'); ok=false; } else setFieldError('edit-p-name','edit-p-name-error','');
+            if(!Number.isFinite(qty)||qty<0){ setFieldError('edit-p-qty','edit-p-qty-error','كمية غير صحيحة'); ok=false; } else setFieldError('edit-p-qty','edit-p-qty-error','');
+            if(type==='piece' && !barcode){ showToast('الباركود مطلوب لمنتجات القطع','error'); ok=false; }
+            if(!ok) return;
+            // SECURE: update via server API
+            const headers=await authHeaders();
+            const res=await fetch('/api/products',{method:'POST', headers, body: JSON.stringify({ id: p.id, name, barcode: barcode||p.barcode, buyPrice: buy, sellPrice: sell, qty, type })});
+            const j=await res.json().catch(()=>({}));
+            if(!res.ok){ showToast(j.error||'تعذر تحديث الصنف','error'); return; }
+            await loadDBFromCloud();
+            closeDialog('edit-product-modal');
+            showToast('تم تحديث بيانات الصنف','success');
+        }
+
+        // --- POS ---
+        let posFilter='piece';
+        function switchPosTab(type, button){
+            posFilter=type;
+            const btn = button || document.querySelector(`.pos-tab[data-pos="${type}"]`);
+            document.querySelectorAll('.pos-tab').forEach(tab=>{ tab.classList.remove('active','btn-main'); tab.setAttribute('aria-selected','false'); });
+            if(btn){ btn.classList.add('active','btn-main'); btn.setAttribute('aria-selected','true'); }
+            const piecePanel=document.getElementById('pos-piece-panel');
+            const weightPanel=document.getElementById('pos-weight-panel');
+            if(piecePanel) piecePanel.classList.toggle('hidden', type!=='piece');
+            if(weightPanel) weightPanel.classList.toggle('hidden', type!=='weight');
+            if(type==='piece'){
+                searchProduct();
+                setTimeout(()=> document.getElementById('pos-search')?.focus(), 50);
+            } else {
+                renderWeightProducts(); updateWeightDetails();
+                setTimeout(()=> document.getElementById('weight-grams')?.focus(), 50);
+            }
+        }
+        let barcodeScanner=null; let barcodeScanLocked=false;
+        async function openBarcodeScanner(){
+            if(typeof Html5Qrcode==='undefined' && typeof Html5QrcodeScanner==='undefined'){ showToast('تعذر تحميل مكتبة الكاميرا. تحقق من الاتصال.','error'); return; }
+            const modal=document.getElementById('barcode-scanner-modal'); const reader=document.getElementById('barcode-reader');
+            modal.hidden=false; reader.innerHTML=''; barcodeScanLocked=false;
+            document.getElementById('barcode-scanner-status').innerText='جاري طلب صلاحية الكاميرا...';
+            try{
+                if(!navigator.mediaDevices?.getUserMedia) throw new Error('camera-unavailable');
+                document.getElementById('barcode-scanner-status').innerText='وجّه الكاميرا نحو الباركود.';
+                // Prefer Html5Qrcode (single permission prompt, no double getUserMedia)
+                if(typeof Html5Qrcode!=='undefined'){
+                    const html5QrCode=new Html5Qrcode('barcode-reader');
+                    barcodeScanner=html5QrCode;
+                    await html5QrCode.start({facingMode:'environment'}, {fps:10, qrbox:{width:280,height:140}}, handleBarcodeScan, ()=>{ document.getElementById('barcode-scanner-status').innerText='جارٍ البحث عن باركود...'; });
+                } else {
+                    barcodeScanner=new Html5QrcodeScanner('barcode-reader',{fps:10, qrbox:{width:280,height:140}, rememberLastUsedCamera:true, showTorchButtonIfSupported:true}, false);
+                    barcodeScanner.render(handleBarcodeScan, ()=>{ document.getElementById('barcode-scanner-status').innerText='جارٍ البحث عن باركود...'; });
+                }
+            }catch(error){
+                await closeBarcodeScanner();
+                const isNotAllowed = error && (error.name==='NotAllowedError' || String(error.message).includes('NotAllowed'));
+                showToast(isNotAllowed?'تم رفض صلاحية الكاميرا. اسمح من إعدادات المتصفح (🔒 بجانب العنوان) وحاول مجدداً.':'لا توجد كاميرا متاحة أو تعذر تشغيلها.','error',4000);
+            }
+        }
+        async function handleBarcodeScan(decodedText){
+            if(barcodeScanLocked) return; barcodeScanLocked=true;
+            await closeBarcodeScanner();
+            const product=db.products.find(p=> String(p.barcode)===String(decodedText));
+            if(!product){ showToast(`المنتج غير موجود: ${decodedText}`,'error'); barcodeScanLocked=false; return; }
+            if(product.type==='weight'){
+                const weightTab=document.querySelector('.pos-tab[data-pos="weight"]') || document.querySelectorAll('.pos-tab')[1];
+                switchPosTab('weight', weightTab);
+                renderWeightProducts();
+                const sel=document.getElementById('weight-product-select');
+                if(sel){
+                    sel.value=String(product.id||product.barcode);
+                    updateWeightDetails(sel.value);
+                }
+                showToast(`تم اختيار وزن: ${product.name}`,'success');
+            } else {
+                // keep pos-search in sync for visual feedback then auto-add
+                const s=document.getElementById('pos-search'); if(s) s.value=decodedText;
+                addToCart(product.barcode);
+                if(s) s.value='';
+                searchProduct();
+            }
+            playBarcodeBeep();
+            barcodeScanLocked=false;
+        }
+        function playBarcodeBeep(){ try{ const C=window.AudioContext||window.webkitAudioContext; const ctx=new C(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.frequency.value=880; g.gain.setValueAtTime(0.08,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12); o.connect(g).connect(ctx.destination); o.start(); o.stop(ctx.currentTime+0.12);}catch(e){} }
+        async function closeBarcodeScanner(){
+            if(barcodeScanner){
+                try{
+                    // Html5Qrcode: stop() then clear(); Html5QrcodeScanner: clear() only
+                    if(barcodeScanner.stop) { try{ await barcodeScanner.stop(); }catch(e){} }
+                    if(barcodeScanner.clear) { try{ await barcodeScanner.clear(); }catch(e){} }
+                }catch(e){}
+                barcodeScanner=null;
+            }
+            const reader=document.getElementById('barcode-reader');
+            if(reader) reader.innerHTML='';
+            const modal=document.getElementById('barcode-scanner-modal');
+            if(modal) modal.hidden=true;
+            barcodeScanLocked=false;
+        }
+        function searchProduct(){
+            const queryEl=document.getElementById('pos-search');
+            const query=(queryEl?.value||'').trim().toLowerCase();
+            const results=db.products.filter(p=> (p.type||'piece')==='piece' && (!query || String(p.name||'').toLowerCase().includes(query) || String(p.barcode||'').toLowerCase().includes(query)));
+            const resDiv=document.getElementById('results-list');
+            if(!resDiv) return;
+            resDiv.innerHTML='';
+            if(!query){
+                const top=results.slice(0,8);
+                if(top.length===0){ resDiv.innerHTML=`<div class="empty-state"><i class="fa fa-search"></i>ابدأ الكتابة للبحث عن المنتجات</div>`; return; }
+                top.forEach(renderResultItem);
+                return;
+            }
+            if(results.length===0){ resDiv.innerHTML=`<div class="empty-state"><i class="fa fa-box-open"></i>لا توجد نتائج لـ "${escapeHtml(query)}" — جرّب الباركود</div>`; return; }
+            if(results.length===1 && String(results[0].barcode).toLowerCase()===query){
+                const sole=results[0];
+                if(Number(sole.qty)<=0){ resDiv.innerHTML=`<div class="empty-state"><i class="fa fa-exclamation-triangle"></i>المنتج "${escapeHtml(sole.name)}" نافد من المخزن</div>`; return; }
+                addToCart(sole.barcode); if(queryEl) queryEl.value=''; showToast(`تمت إضافة ${sole.name}`,'success'); searchProduct(); return;
+            }
+            results.slice(0,20).forEach(renderResultItem);
+            function renderResultItem(p){
+                const qty=Number(p.qty)||0;
+                let badgeClass='badge-ok', badgeText='متوفر';
+                if(qty<=0){ badgeClass='badge-danger'; badgeText='نفد'; } else if(qty<5){ badgeClass='badge-warn'; badgeText='قليل'; }
+                const disabled = qty<=0;
+                const btnText = qty<=0 ? 'نفد' : 'إضافة';
+                const row=document.createElement('div');
+                row.className='result-item';
+                row.setAttribute('role','listitem');
+                const meta=document.createElement('div');
+                meta.className='result-meta';
+                meta.innerHTML=`<strong>${escapeHtml(p.name)}</strong><small>باركود: ${escapeHtml(p.barcode||'-')} — <span class="badge ${badgeClass}">${badgeText} ${qty}</span> — ${Number(p.sellPrice).toFixed(2)} ج.م</small>`;
+                const btn=document.createElement('button');
+                btn.className=`btn ${qty<=0?'btn-ghost':'btn-main'}`;
+                if(disabled) btn.disabled=true;
+                btn.setAttribute('aria-label', `إضافة ${p.name} للسلة`);
+                btn.innerHTML=`${btnText} <i class="fa fa-plus"></i>`;
+                if(!disabled) btn.addEventListener('click', ()=> addToCart(p.barcode));
+                row.appendChild(meta);
+                row.appendChild(btn);
+                resDiv.appendChild(row);
+            }
+        }
+        const debouncedSearch=debounce(searchProduct, 200);
+        function renderWeightProducts(){
+            const select=document.getElementById('weight-product-select');
+            const emptyHint=document.getElementById('weight-products-empty');
+            if(!select) return;
+            const selected=select.value;
+            const query=(document.getElementById('weight-product-search')?.value||'').trim().toLowerCase();
+            const allWeight=db.products.filter(p=> p.type==='weight' && (!query || String(p.name||'').toLowerCase().includes(query)));
+            setupWeightProductBinding();
+            if(allWeight.length===0){
+                select.innerHTML='<option value="">لا يوجد أصناف موزونة</option>';
+                if(emptyHint) emptyHint.style.display='block';
+                updateWeightDetails('');
+                return;
+            }
+            if(emptyHint) emptyHint.style.display='none';
+            allWeight.sort((a,b)=> (Number(b.qty)-Number(a.qty)) || String(a.name).localeCompare(String(b.name)));
+            select.innerHTML='<option value="">اختر صنف الوزن من المخزن</option>' + allWeight.map(p=>{
+                const qty=Number(p.qty)||0;
+                const disabled= qty<=0 ? 'disabled' : '';
+                const label= qty<=0 ? `${escapeHtml(p.name)} — نافد — ${Number(p.sellPrice).toFixed(2)} ج/كجم` : `${escapeHtml(p.name)} — ${qty.toFixed(3)} كجم متاح — ${Number(p.sellPrice).toFixed(2)} ج/كجم`;
+                return `<option value="${escapeHtml(String(p.id||p.barcode))}" ${disabled}>${label}</option>`;
+            }).join('');
+            const match=allWeight.find(p=> String(p.id||p.barcode)===String(selected) && Number(p.qty)>0);
+            if(match){
+                select.value = String(match.id||match.barcode);
+            } else if(allWeight.some(p=>Number(p.qty)>0)){
+                const firstInStock=allWeight.find(p=>Number(p.qty)>0);
+                select.value = String(firstInStock.id||firstInStock.barcode);
+            } else {
+                select.value='';
+            }
+            updateWeightDetails(select.value);
+        }
+        function updateWeightDetails(selectedId){
+            const select=document.getElementById('weight-product-select');
+            const val=String(selectedId ?? select?.value ?? '');
+            const product=db.products.find(p=> String(p.id||p.barcode)===val && p.type==='weight');
+            const price=document.getElementById('weight-price');
+            const available=document.getElementById('weight-available-kg');
+            if(select && select.value!==val) select.value=val;
+            if(price) price.value= product? Number(product.sellPrice).toFixed(2):'';
+            if(available) available.innerText= product? Number(product.qty).toFixed(3):'0';
+            calculateWeightTotal();
+            return product;
+        }
+        function setupWeightProductBinding(){ const sel=document.getElementById('weight-product-select'); if(!sel||sel.dataset.bound==='true') return; sel.addEventListener('change',e=> updateWeightDetails(e.target.value)); sel.dataset.bound='true'; }
+        function calculateWeightTotal(){ const price=Number(document.getElementById('weight-price')?.value||0); const grams=Number(document.getElementById('weight-grams')?.value||0); const total=grams>0?(price/1000)*grams:0; const out=document.getElementById('weight-calculated-total'); if(out) out.innerText=total.toFixed(2); }
+        const debouncedWeightSearch=debounce(renderWeightProducts, 200);
+        function addToCart(barcode){
+            if(!hasPermission('pos')){ showToast('لا تملك صلاحية البيع','error'); return; }
+            const product=db.products.find(p=> String(p.barcode)===String(barcode) && (p.type||'piece')==='piece');
+            if(!product){ showToast('الصنف غير موجود في منتجات القطع','error'); return; }
+            const avail=Number(product.qty);
+            if(!Number.isFinite(avail)||avail<=0){ showToast('الكمية غير كافية — المنتج نافد','error'); return; }
+            const cartItem=cart.find(i=> String(i.barcode)===String(product.barcode) && i.type==='piece');
+            if(cartItem){ if(Number(cartItem.qty)+1>avail){ showToast(`الكمية المتاحة ${avail} فقط`,'error'); return; } cartItem.qty=Number(cartItem.qty)+1; } else { cart.push({id:product.id, barcode:product.barcode, name:product.name, sellPrice:Number(product.sellPrice), qty:1, type:'piece', saleUnit:'piece'}); }
+            renderCart(); showToast(`أضيف: ${product.name}`,'success',1500);
+        }
+        function addWeightItem(){
+            if(!hasPermission('weights')){ showToast('لا تملك صلاحية الأوزان','error'); return; }
+            const selectedId=document.getElementById('weight-product-select').value;
+            const product=db.products.find(p=> String(p.id||p.barcode)===String(selectedId) && p.type==='weight');
+            const grams=Number(document.getElementById('weight-grams').value);
+            let err='';
+            if(!product) err='اختر صنف وزن من المخزن';
+            else if(!Number.isFinite(grams)||grams<=0||grams> Number(product.qty)*1000) err='الوزن غير متاح في المخزن';
+            if(err){ setFieldError('weight-grams','weight-grams-error',err); showToast(err,'error'); return; } else setFieldError('weight-grams','weight-grams-error','');
+            const kg=grams/1000;
+            const cartItem=cart.find(i=> i.barcode===product.barcode && i.type==='weight');
+            if(cartItem){ if(cartItem.qty+kg> Number(product.qty)){ showToast('تجاوزت الكمية المتاحة','error'); return; } cartItem.qty+=kg; cartItem.grams+=grams; cartItem.name=`${product.name} (${cartItem.grams} جرام)`; } else { cart.push({...product, name:`${product.name} (${grams} جرام)`, weightName:product.name, grams, qty:kg, saleUnit:'kg'}); }
+            renderCart();
+            document.getElementById('weight-grams').value='';
+            renderWeightProducts(); calculateWeightTotal();
+            showToast(`أضيف وزن: ${product.name} ${grams}g`,'success');
+        }
+        function renderCart(){
+            const tbody=document.getElementById('cart-items');
+            const empty=document.getElementById('cart-empty');
+            tbody.innerHTML='';
+            if(cart.length===0){ empty.style.display='block'; document.getElementById('cart-total').innerText='0.00'; return; } else empty.style.display='none';
+            let total=0;
+            cart.forEach((item, index)=>{
+                const isWeight=item.type==='weight';
+                const unitPrice=Number(item.sellPrice);
+                const subtotal=isWeight? unitPrice*Number(item.qty) : unitPrice*Math.round(Number(item.qty));
+                total+=subtotal;
+                const displayQty=isWeight? `${Number(item.grams||item.qty*1000).toFixed(0)} جرام` : `${Math.round(Number(item.qty))} قطعة`;
+                tbody.insertAdjacentHTML('beforeend', `<tr><td>${escapeHtml(item.name)}</td><td>${unitPrice.toFixed(2)}${isWeight?' / كجم':' / قطعة'}</td><td><div class="cart-quantity-control"><button type="button" class="btn btn-secondary" onclick="updateCartQty(${index}, -1)" aria-label="إنقاص">−</button><input type="number" min="1" step="1" value="${isWeight? Number(item.grams||item.qty*1000).toFixed(0): Math.round(Number(item.qty))}" onchange="setCartQty(${index}, this.value)" aria-label="كمية"><span style="min-width:48px; font-size:.85rem;">${isWeight?'جرام':'قطعة'}</span><button type="button" class="btn btn-main" onclick="updateCartQty(${index}, 1)" aria-label="زيادة">+</button></div></td><td>${subtotal.toFixed(2)}</td><td><button onclick="confirmRemoveFromCart(${index})" class="btn btn-danger" style="padding:8px 12px; min-height:36px;" aria-label="حذف"><i class="fa fa-trash"></i></button></td></tr>`);
+            });
+            document.getElementById('cart-total').innerText=total.toFixed(2);
+        }
+        function updateCartQty(index, delta){
+            const item=cart[index]; if(!item) return;
+            const product=db.products.find(p=> String(p.barcode)===String(item.barcode));
+            if(item.type==='weight'){
+                // 50g step for finer control
+                const step=50;
+                const nextGrams=Number(item.grams||item.qty*1000) + (delta*step);
+                if(nextGrams<=0) return confirmRemoveFromCart(index);
+                if(product && nextGrams> Number(product.qty)*1000){ showToast('الكمية غير كافية','error'); return; }
+                item.grams=nextGrams; item.qty=nextGrams/1000; item.name=`${item.weightName||product?.name||item.name} (${nextGrams} جرام)`;
+            } else {
+                const nextQty=Math.round(Number(item.qty))+delta;
+                if(nextQty<=0) return confirmRemoveFromCart(index);
+                if(product && nextQty> Number(product.qty)){ showToast('الكمية غير كافية','error'); return; }
+                item.qty=nextQty;
+            }
+            renderCart();
+        }
+        function setCartQty(index, value){
+            const item=cart[index]; const entered=Number(value);
+            if(!item||!Number.isFinite(entered)||entered<=0) return renderCart();
+            const product=db.products.find(p=> String(p.barcode)===String(item.barcode));
+            if(item.type==='weight'){
+                if(product && entered> Number(product.qty)*1000){ showToast('الكمية غير كافية','error'); return renderCart(); }
+                item.grams=Math.round(entered); item.qty=item.grams/1000; item.name=`${item.weightName||product?.name||item.name} (${item.grams} جرام)`;
+            } else {
+                const nextQty=Math.round(entered);
+                if(product && nextQty> Number(product.qty)){ showToast('الكمية غير كافية','error'); return renderCart(); }
+                item.qty=nextQty;
+            }
+            renderCart();
+        }
+        async function confirmRemoveFromCart(index){
+            if(!hasPermission('delete_cart')){
+                const ok=await requestOwnerPin(); if(!ok) return;
+            } else {
+                const ok=await requestConfirm('حذف من السلة','هل تريد حذف هذا الصنف من السلة؟','حذف',true); if(!ok) return;
+            }
+            cart.splice(index,1); renderCart(); showToast('تم الحذف','info');
+        }
+        function clearCart(){ if(cart.length===0) return; requestConfirm('تفريغ السلة','هل تريد تفريغ كامل السلة؟','تفريغ', true).then(ok=>{ if(ok){ cart=[]; renderCart(); showToast('تم تفريغ السلة','info'); }}); }
+
+        // Checkout with dialog
+        function openCheckoutDialog(){
+            if(cart.length===0){ showToast('السلة فارغة','error'); return; }
+            const total=cart.reduce((sum,item)=> sum + (item.type==='weight'? Number(item.sellPrice)*Number(item.qty) : Number(item.sellPrice)*Math.round(Number(item.qty))), 0);
+            document.getElementById('checkout-total').value=total.toFixed(2);
+            document.getElementById('checkout-paid').value='';
+            document.getElementById('checkout-change').innerText='0.00 ج.م';
+            setFieldError('checkout-paid','checkout-paid-error','');
+            const summary=document.getElementById('checkout-summary');
+            summary.innerHTML= cart.map(i=> `<div style="display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px dashed var(--line);"><span>${escapeHtml(i.name)} × ${i.type==='weight'? i.grams+'g': i.qty}</span><span>${(i.type==='weight'? Number(i.sellPrice)*Number(i.qty) : Number(i.sellPrice)*Number(i.qty)).toFixed(2)} ج.م</span></div>`).join('') + `<div style="text-align:left; font-weight:700; margin-top:8px;">الإجمالي: ${total.toFixed(2)} ج.م</div>`;
+            openDialog('checkout-modal');
+            setTimeout(()=> document.getElementById('checkout-paid').focus(), 100);
+        }
+        function updateCheckoutChange(){
+            const total=Number(document.getElementById('checkout-total').value)||0;
+            const paid=Number(document.getElementById('checkout-paid').value)||0;
+            const change=paid-total;
+            const el=document.getElementById('checkout-change');
+            el.innerText= (change>=0? change.toFixed(2): '0.00') + ' ج.م';
+            el.style.color = change<0 ? 'var(--danger-color)' : 'var(--accent-color)';
+        }
+        async function confirmCheckout(shouldPrint){
+            // shouldPrint: true => confirm + print, false/undefined => confirm only (تأكيد البيع)
+            const doPrint = shouldPrint === true;
+            const total=Number(document.getElementById('checkout-total').value)||0;
+            const paid=Number(document.getElementById('checkout-paid').value);
+            if(!Number.isFinite(paid)||paid<total){ setFieldError('checkout-paid','checkout-paid-error','المبلغ المدفوع أقل من الإجمالي'); showToast('المبلغ المدفوع غير كافٍ','error'); return; } else setFieldError('checkout-paid','checkout-paid-error','');
+            const btnConfirm = document.getElementById('confirm-sale-btn');
+            const btnPrint = document.getElementById('confirm-sale-print-btn');
+            const btns = [btnConfirm, btnPrint].filter(Boolean);
+            if(btns.length===0) return;
+            btns.forEach(b=> b.disabled=true);
+            const origConfirmHTML = btnConfirm ? btnConfirm.innerHTML : '';
+            const origPrintHTML = btnPrint ? btnPrint.innerHTML : '';
+            if(btnConfirm) btnConfirm.innerHTML='جاري الحفظ... <i class="fa fa-spinner fa-spin"></i>';
+            if(btnPrint) btnPrint.innerHTML='جاري الحفظ... <i class="fa fa-spinner fa-spin"></i>';
+            const saleItems=[...cart];
+            try{
+                // SECURE: checkout via server API (atomic, server validates price/stock, prevents tampering)
+                const checkoutHeaders = await authHeaders();
+                const checkoutRes = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: checkoutHeaders,
+                    body: JSON.stringify({ items: saleItems.map(i=> ({ barcode: i.barcode, qty: i.qty, type: i.type, name: i.name })), total })
+                });
+                const checkoutJson = await checkoutRes.json().catch(()=>({}));
+                if(!checkoutRes.ok) throw new Error(checkoutJson.error || 'تعذر إتمام البيع');
+                await loadDBFromCloud();
+                db.currentShiftSales+=total; db.currentShiftInvoices+=1; db.currentShiftItems+= cart.reduce((s,i)=> s + (i.type==='weight'? Number(i.grams||i.qty*1000): Math.round(Number(i.qty||0))),0);
+                cart.forEach(item=>{ const name=item.weightName||item.name; const sold=item.type==='weight'? Number(item.grams||item.qty*1000): Math.round(Number(item.qty||0)); db.currentShiftItemDetails[name]=(db.currentShiftItemDetails[name]||0)+sold; });
+                // Print only when requested via "تأكيد وطباعة"
+                if(doPrint){ buildPrintableReceipt(saleItems, total, paid, paid-total); window.print(); }
+                cart=[]; renderCart(); renderShiftStats(); showToast('تمت عملية البيع بنجاح','success'); closeDialog('checkout-modal');
+                ['pos-search','weight-product-search','weight-grams'].forEach(id=>{ const f=document.getElementById(id); if(f) f.value=''; });
+                const rl=document.getElementById('results-list'); if(rl) rl.innerHTML='';
+                searchProduct();
+                if(doPrint){ setTimeout(()=> hideReceipt(), 800); }
+            } catch(e){ showToast(e.message||'فشل إتمام البيع','error',4000); // revert local qty? reload from cloud
+                await loadDBFromCloud();
+            } finally {
+                if(btnConfirm){ btnConfirm.disabled=false; btnConfirm.innerHTML=origConfirmHTML || '<i class="fa fa-check"></i> تأكيد البيع'; }
+                if(btnPrint){ btnPrint.disabled=false; btnPrint.innerHTML=origPrintHTML || 'تأكيد وطباعة <i class="fa fa-print"></i>'; }
+            }
+        }
+        function buildPrintableReceipt(items, total, paid, change){
+            const now=new Date().toLocaleString('ar-EG');
+            const rows=items.map(i=> `<tr><td>${escapeHtml(i.name)}</td><td>${Number(i.sellPrice).toFixed(2)}</td><td>${i.type==='weight'? escapeHtml(String(i.grams))+'g': escapeHtml(String(i.qty))}</td><td>${(i.type==='weight'? Number(i.sellPrice)*Number(i.qty) : Number(i.sellPrice)*Number(i.qty)).toFixed(2)}</td></tr>`).join('');
+            const el=document.getElementById('receipt-print');
+            if(!el) return;
+            el.innerHTML=`<div style="padding:20px; font-family:Tahoma"><h2 style="text-align:center">سوبر ماركت أيوب</h2><p style="text-align:center">${now} — ${escapeHtml(currentUser?.name||'')}</p><table style="width:100%; border-collapse:collapse; margin-top:12px;" border="1" cellpadding="8"><thead><tr><th>الصنف</th><th>سعر</th><th>كمية</th><th>إجمالي</th></tr></thead><tbody>${rows}</tbody></table><h3 style="text-align:left">الإجمالي: ${total.toFixed(2)} ج.م</h3><p>المدفوع: ${paid.toFixed(2)} — الباقي: ${change.toFixed(2)}</p><p style="text-align:center">شكراً لزيارتكم</p></div>`;
+            el.style.display='block';
+            el.hidden=false;
+        }
+        function hideReceipt(){ const el=document.getElementById('receipt-print'); if(el){ el.innerHTML=''; el.style.display='none'; el.hidden=true; } }
+        function renderShiftStats(){
+            const lastClosing=(db.shiftClosings||[]).reduce((latest,c)=> !latest || new Date(c.closed_at) > new Date(latest.closed_at) ? c : latest, null);
+            const lastTs = lastClosing ? new Date(lastClosing.closed_at).getTime() : 0;
+            const sales=(db.sales||[]).filter(sale=> new Date(sale.created_at).getTime() > lastTs);
+            const invoiceCount=sales.length;
+            const itemCount=sales.reduce((sum,s)=> sum + (Array.isArray(s.items)? s.items.reduce((n,it)=> n + (it.type==='weight'? (Number(it.grams)||Number(it.qty)*1000) : Number(it.qty)||0),0):0),0);
+            const salesTotal=sales.reduce((sum,s)=> sum + (Number(s.total)||0),0);
+            const elInv=document.getElementById('shift-invoices-count'); if(elInv) elInv.innerText=invoiceCount;
+            const elItems=document.getElementById('shift-items-count'); if(elItems) elItems.innerText=itemCount;
+            const elSales=document.getElementById('shift-sales-total'); if(elSales) elSales.innerText=salesTotal.toFixed(2)+' ج.م';
+        }
+        // --- Expenses ---
+        function renderExpensesHistory(){
+            const tbody=document.getElementById('expenses-history-list');
+            const empty=document.getElementById('expenses-empty');
+            const totalEl=document.getElementById('expenses-total');
+            if(!tbody) return;
+            const lastClosing=(db.shiftClosings||[]).reduce((latest,c)=> !latest || new Date(c.closed_at)> new Date(latest.closed_at)? c: latest, null);
+            const shiftExpenses=(db.expenses||[]).filter(e=> !lastClosing || new Date(e.created_at) > new Date(lastClosing.closed_at));
+            tbody.innerHTML='';
+            if(shiftExpenses.length===0){ empty.classList.remove('hidden'); if(totalEl) totalEl.innerText='0.00'; return; }
+            empty.classList.add('hidden');
+            let total=0;
+            shiftExpenses.forEach(e=>{
+                total+=Number(e.amount)||0;
+                const d=new Date(e.created_at);
+                tbody.insertAdjacentHTML('beforeend', `<tr><td>${d.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'})} ${d.toLocaleDateString('ar-EG')}</td><td>${escapeHtml(e.reason||'')}</td><td>${Number(e.amount).toFixed(2)}</td><td>${escapeHtml(e.user_id||'')}</td></tr>`);
+            });
+            if(totalEl) totalEl.innerText=total.toFixed(2);
+        }
+        async function addExpense(){
+            const reason=document.getElementById('exp-reason').value.trim();
+            const amount=Number(document.getElementById('exp-amount').value);
+            let ok=true;
+            if(!reason){ setFieldError('exp-reason','exp-reason-error','أدخل السبب'); ok=false; } else setFieldError('exp-reason','exp-reason-error','');
+            if(!Number.isFinite(amount)||amount<=0){ setFieldError('exp-amount','exp-amount-error','مبلغ غير صحيح'); ok=false; } else setFieldError('exp-amount','exp-amount-error','');
+            if(!ok) return;
+            const headers2=await authHeaders();
+            const r2=await fetch('/api/expenses',{method:'POST', headers: headers2, body: JSON.stringify({reason, amount})});
+            const j2=await r2.json().catch(()=>({}));
+            if(!r2.ok){ showToast(j2.error||'تعذر حفظ المصروف','error'); return; }
+            await loadDBFromCloud();
+            document.getElementById('exp-reason').value=''; document.getElementById('exp-amount').value='';
+            showToast('تم تسجيل المصروف','success');
+        }
+        // Shift preview (cloud-only)
+        function buildShiftReportData(){
+            const lastClosing=(db.shiftClosings||[]).reduce((latest,c)=> !latest || new Date(c.closed_at)> new Date(latest.closed_at)? c: latest, null);
+            const shiftSales=(db.sales||[]).filter(s=> !lastClosing || new Date(s.created_at) > new Date(lastClosing.closed_at));
+            const shiftExpenses=(db.expenses||[]).filter(e=> !lastClosing || new Date(e.created_at) > new Date(lastClosing.closed_at));
+            const currentSalesTotal=shiftSales.reduce((sum,s)=> sum + (Number(s.total)||0),0);
+            const totalExpenses=shiftExpenses.reduce((sum,e)=> sum + (Number(e.amount)||0),0);
+            const net=currentSalesTotal-totalExpenses;
+            // Build item details from actual sales items (not local memory)
+            const soldMap={};
+            shiftSales.forEach(s=> (Array.isArray(s.items)? s.items:[]).forEach(it=>{ const name=it.weightName||it.name||'صنف'; const qty=it.type==='weight'? (Number(it.grams)||Number(it.qty)*1000) : Number(it.qty)||0; soldMap[name]=(soldMap[name]||0)+qty; }));
+            const expenseDetails=shiftExpenses.length? shiftExpenses.map(e=> `- ${e.reason}: ${Number(e.amount).toFixed(2)} ج.م`).join('\n'):'لا توجد مصروفات';
+            const soldDetails=Object.keys(soldMap).length? Object.entries(soldMap).map(([n,q])=> `- ${n}: ${q}`).join('\n'):'لا توجد مبيعات';
+            const text=`*تقرير شيفت - سوبر ماركت أيوب*\nالعامل: ${currentUser?.name||''}\nعدد الفواتير: ${shiftSales.length}\nإجمالي المبيعات: ${currentSalesTotal.toFixed(2)} ج.م\nإجمالي المصروفات: ${totalExpenses.toFixed(2)} ج.م\nالصافي للخزينة: ${net.toFixed(2)} ج.م\n\nتفاصيل المصروفات:\n${expenseDetails}\n\nالأصناف المباعة:\n${soldDetails}\nالتاريخ: ${new Date().toLocaleString('ar-EG')}`;
+            return {text, currentSalesTotal, totalExpenses, net, soldDetails, shiftSales, shiftExpenses};
+        }
+        let _pendingShiftReport=null;
+        function openShiftPreview(){
+            if(!hasPermission('shift')){ showToast('لا تملك صلاحية تقفيل الشيفت','error'); return; }
+            const data=buildShiftReportData();
+            _pendingShiftReport=data;
+            document.getElementById('shift-preview-content').textContent=data.text;
+            openDialog('shift-preview-modal');
+        }
+        function copyShiftReport(){
+            const txt=document.getElementById('shift-preview-content').textContent;
+            navigator.clipboard.writeText(txt).then(()=> showToast('تم النسخ','success')).catch(()=> showToast('تعذر النسخ','error'));
+        }
+        async function sendShiftWhatsapp(){
+            const data=_pendingShiftReport || buildShiftReportData();
+            const ownerNum=String(db.ownerWhatsappNumber||'').replace(/\D/g,'');
+            if(!ownerNum){ showToast('يرجى تسجيل رقم واتساب المالك من الإعدادات','error'); return; }
+            const encoded=encodeURIComponent(data.text);
+            const waUrl=`https://wa.me/${ownerNum}?text=${encoded}`;
+            // Open synchronously before await to avoid popup blocker
+            const win=window.open(waUrl,'_blank');
+            try{
+                const headers=await authHeaders();
+                const r=await fetch('/api/shift',{method:'POST', headers, body: JSON.stringify({ notes: data.soldDetails })});
+                const j=await r.json().catch(()=>({}));
+                if(!r.ok){ showToast(j.error||'تعذر حفظ إغلاق الشيفت','error'); if(win) win.close(); return; }
+                await loadDBFromCloud();
+                showToast('تم حفظ تقرير الشيفت','success');
+                if(document.getElementById('shift-reset-after').checked){
+                    db.currentShiftSales=0; db.currentShiftInvoices=0; db.currentShiftItems=0; db.currentShiftItemDetails={};
+                    showToast('تم تصفير عداد الشيفت المحلي','info');
+                }
+                closeDialog('shift-preview-modal');
+                if(!win) showToast('افتح واتساب يدوياً — قد يكون المتصفح حجب النافذة','info',4000);
+            } catch(e){ showToast(e.message,'error'); }
+        }
+        async function startNewShift(){
+            if(!hasPermission('shift')){ showToast('لا تملك صلاحية بدء وردية','error'); return; }
+            const ok=await requestConfirm('بدء وردية جديدة','سيتم تصفير عدادات الشيفت المحلية مع الاحتفاظ بالمخزون. سيُعتبر كل ما بعد الآن شيفتاً جديداً (المصروفات والمبيعات السابقة محفوظة كسجل). هل تريد المتابعة؟','بدء الوردية'); if(!ok) return;
+            const headers=await authHeaders();
+            const r=await fetch('/api/shift',{method:'POST', headers, body: JSON.stringify({ notes:'بدء وردية جديدة' })});
+            const j=await r.json().catch(()=>({}));
+            if(!r.ok){ showToast(j.error||'تعذر بدء الوردية','error'); return; }
+            await loadDBFromCloud();
+            db.currentShiftSales=0; db.currentShiftInvoices=0; db.currentShiftItems=0; db.currentShiftItemDetails={};
+            renderShiftStats(); showToast('بدأت وردية جديدة','success');
+        }
+
+        // --- Workers ---
+        let editingWorker=null;
+        function cancelWorkerEdit(){ editingWorker=null; document.getElementById('worker-form-title').innerText='إضافة موظف جديد'; document.getElementById('worker-submit').innerText='إضافة الموظف'; document.getElementById('worker-cancel').style.display='none'; document.getElementById('worker-name').value=''; document.getElementById('worker-pin').value=''; document.getElementById('worker-active').checked=true; document.querySelectorAll('.perm').forEach(cb=> cb.checked=false); setFieldError('worker-name','worker-name-error',''); setFieldError('worker-pin','worker-pin-error',''); }
+        function openWorkerEditor(worker){
+            if(currentUser?.role!=='admin'){ showToast('تعديل الموظفين للمالك فقط','error'); return; }
+            editingWorker=worker;
+            document.getElementById('worker-form-title').innerText='تعديل بيانات الموظف';
+            document.getElementById('worker-submit').innerText='حفظ التعديل';
+            document.getElementById('worker-cancel').style.display='inline-flex';
+            document.getElementById('worker-name').value=worker.display_name||worker.username||'';
+            document.getElementById('worker-pin').value='';
+            document.getElementById('worker-active').checked=worker.active!==false;
+            document.querySelectorAll('.perm').forEach(cb=> cb.checked=(worker.permissions||[]).includes(cb.value));
+            document.getElementById('worker-name').focus();
+        }
+        async function addWorker(){
+            const name=document.getElementById('worker-name').value.trim();
+            const pin=document.getElementById('worker-pin').value.trim();
+            const perms=Array.from(document.querySelectorAll('.perm:checked')).map(cb=> cb.value);
+            const active=document.getElementById('worker-active').checked;
+            let ok=true;
+            if(!name){ setFieldError('worker-name','worker-name-error','أدخل اسم العامل'); ok=false; } else setFieldError('worker-name','worker-name-error','');
+            if(!editingWorker && !pin){ setFieldError('worker-pin','worker-pin-error','أدخل الرمز السري'); ok=false; } else setFieldError('worker-pin','worker-pin-error','');
+            if(!ok) return;
+            const submitBtn=document.getElementById('worker-submit'); submitBtn.disabled=true; const oldText=submitBtn.textContent; submitBtn.innerHTML='<i class="fa fa-spinner fa-spin"></i> جاري الحفظ...';
+            try{
+                const {data:{session}}=await supabaseClient.auth.getSession();
+                const headers={'content-type':'application/json'};
+                if(session?.access_token) headers.authorization=`Bearer ${session.access_token}`;
+                const response=await fetchWithTimeout('/api/worker-auth',{method:'POST',headers, body:JSON.stringify({action: editingWorker?'update':'create', id:editingWorker?.id, username:name, password:pin, ownerPin:db.ownerPin, permissions:perms, active})}, 10000);
+                const result=await response.json().catch(()=>({ error: 'استجابة غير صالحة' }));
+                if(!response.ok||!result.ok){
+                    const m = result.error || (response.status===504 ? 'انتهت مهلة الخادم — حاول مرة أخرى' : 'تعذر حفظ الموظف');
+                    showToast(m,'error',4000); return;
+                }
+                // Non-blocking reload with timeout guard
+                Promise.race([loadDBFromCloud(), new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),6000))]).catch(e=> console.warn('addWorker load timeout', e.message));
+                cancelWorkerEdit(); showToast(editingWorker?'تم تحديث الموظف':'تمت إضافة الموظف','success');
+            } catch(e){
+                const m = isTimeoutError(e) ? 'انتهت مهلة الاتصال — الشبكة بطيئة، حاول مرة أخرى' : 'تعذر الاتصال بالخادم';
+                showToast(m,'error');
+            } finally { submitBtn.disabled=false; submitBtn.textContent=oldText; }
+        }
+        async function changeOwnerPin(){
+            if(currentUser?.role!=='admin'){ showToast('تغيير رمز المالك للمالك فقط','error'); return; }
+            const oldPin=document.getElementById('old-owner-pin').value;
+            const newPin=document.getElementById('new-owner-pin').value.trim();
+            setFieldError('new-owner-pin','owner-pin-change-error','');
+            if(!newPin||newPin.length<4){ setFieldError('new-owner-pin','owner-pin-change-error','الرمز الجديد ≥4 أحرف/أرقام'); return; }
+            try{
+                const headers=await authHeaders();
+                const res=await fetch('/api/settings',{method:'POST', headers, body: JSON.stringify({key:'owner_pin', oldPin, newPin})});
+                const j=await res.json().catch(()=>({}));
+                if(!res.ok){ showToast(j.error||'تعذر تحديث الرمز','error'); if(j.error?.includes('القديم')) setFieldError('new-owner-pin','owner-pin-change-error', j.error); return; }
+                db.ownerPin=newPin;
+                document.getElementById('old-owner-pin').value=''; document.getElementById('new-owner-pin').value=''; document.getElementById('owner-pin-status').innerText='تم تحديث الرمز ✓ — محفوظ في قاعدة البيانات';
+                showToast('تم تحديث رمز المالك وحفظه في قاعدة البيانات','success');
+                setTimeout(()=> document.getElementById('owner-pin-status').innerText='', 3000);
+            }catch(e){ showToast('تعذر الاتصال بالخادم','error'); }
+        }
+        async function saveOwnerWhatsappNumber(){
+            const input=document.getElementById('owner-whatsapp-number');
+            const raw=input.value.replace(/\D/g,'');
+            setFieldError('owner-whatsapp-number','owner-whatsapp-error','');
+            if(!raw || raw.length<10){ setFieldError('owner-whatsapp-number','owner-whatsapp-error','رقم غير صحيح — يجب أن يبدأ بـ 20 ويحتوي 11-14 رقماً'); showToast('رقم غير صحيح','error'); return; }
+            try{
+                let headers=await authHeaders();
+                let hasAuth=!!headers.authorization;
+                let body={key:'owner_whatsapp', number: raw};
+                if(!hasAuth){
+                    const pinVal = await requestOwnerPinValue();
+                    if(!pinVal) return;
+                    body.ownerPin = pinVal;
+                }
+                const res=await fetch('/api/settings',{method:'POST', headers: hasAuth ? headers : {'content-type':'application/json'}, body: JSON.stringify(body)});
+                const j=await res.json().catch(()=>({}));
+                if(!res.ok){
+                    // If auth failed, retry with PIN dialog
+                    if(j.error && (j.error.includes('صلاحية') || j.error.includes('Unauthorized')) && hasAuth){
+                        const pinVal2 = await requestOwnerPinValue();
+                        if(!pinVal2) return;
+                        const res2=await fetch('/api/settings',{method:'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({key:'owner_whatsapp', number: raw, ownerPin: pinVal2})});
+                        const j2=await res2.json().catch(()=>({}));
+                        if(!res2.ok){ showToast(j2.error||'تعذر حفظ الرقم','error'); return; }
+                        db.ownerWhatsappNumber=j2.number||raw;
+                        document.getElementById('owner-whatsapp-status').innerText='تم الحفظ ✓ — محفوظ في قاعدة البيانات';
+                        showToast('تم حفظ رقم الواتساب في قاعدة البيانات','success');
+                        setTimeout(()=> document.getElementById('owner-whatsapp-status').innerText='', 2500);
+                        return;
+                    }
+                    showToast(j.error||'تعذر حفظ الرقم','error'); return;
+                }
+                db.ownerWhatsappNumber=j.number||raw;
+                document.getElementById('owner-whatsapp-status').innerText='تم الحفظ ✓ — محفوظ في قاعدة البيانات';
+                showToast('تم حفظ رقم الواتساب في قاعدة البيانات','success');
+                setTimeout(()=> document.getElementById('owner-whatsapp-status').innerText='', 2500);
+            }catch(e){ showToast('تعذر الاتصال بالخادم','error'); }
+        }
+        async function renderWorkers(){
+            const whatsappInput=document.getElementById('owner-whatsapp-number'); if(whatsappInput) whatsappInput.value=db.ownerWhatsappNumber||'';
+            const list=document.getElementById('workers-list'); if(!list) return;
+            list.innerHTML='<h4>العمال المسجلون:</h4>';
+            db.workers=db.workers||[];
+            if(db.workers.length===0){ list.insertAdjacentHTML('beforeend','<div class="empty-state" style="padding:16px;"><i class="fa fa-users"></i>لا يوجد عمال بعد — أضف أول موظف</div>'); return; }
+            const isOwner=Boolean(currentUser && (currentUser.role==='admin' || currentUser.permissions?.includes('all')));
+            db.workers.forEach(w=>{
+                const permissions=Array.isArray(w.permissions)? w.permissions.join(', '):'';
+                const safeWorker=encodeURIComponent(JSON.stringify({id:w.id, username:w.username, display_name:w.display_name, permissions:w.permissions||[], active:w.active!==false}));
+                const status=w.active===false? '<span class="badge badge-danger">غير نشط</span>':'<span class="badge badge-ok">نشط</span>';
+                const controls=isOwner? `<div class="employee-actions"><button class="btn btn-secondary" type="button" onclick="openWorkerEditor(JSON.parse(decodeURIComponent('${safeWorker}')))">✏ تعديل</button><button class="btn btn-ghost" type="button" onclick="openPermissionsEditor(JSON.parse(decodeURIComponent('${safeWorker}')))">⚙ الصلاحيات</button><button class="btn btn-danger" type="button" onclick="deleteEmployee(JSON.parse(decodeURIComponent('${safeWorker}')))">🗑 حذف</button></div>`:'';
+                list.insertAdjacentHTML('beforeend', `<div class="employee-row"><span><strong>${escapeHtml(w.display_name||w.username)}</strong> ${status}<small>الصلاحيات: ${escapeHtml(permissions||'لا توجد')}</small></span>${controls}</div>`);
+            });
+        }
+        function openFactoryReset(){ document.getElementById('factory-pin').value=''; document.getElementById('factory-confirm').value=''; setFieldError('factory-pin','factory-pin-error',''); setFieldError('factory-confirm','factory-confirm-error',''); openDialog('factory-reset-modal'); }
+        function downloadBackup(){
+            const blob=new Blob([JSON.stringify({db, exported_at:new Date().toISOString()}, null, 2)], {type:'application/json'});
+            const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`ayoub-backup-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(url); showToast('تم تنزيل النسخة الاحتياطية','success');
+        }
+        async function confirmFactoryReset(){
+            const pin=document.getElementById('factory-pin').value;
+            const confirmText=document.getElementById('factory-confirm').value.trim();
+            let ok=true;
+            // PIN is verified server-side (hashed); client only checks non-empty
+            if(!pin){ setFieldError('factory-pin','factory-pin-error','رمز المالك مطلوب'); ok=false; } else setFieldError('factory-pin','factory-pin-error','');
+            if(confirmText!=='DELETE'){ setFieldError('factory-confirm','factory-confirm-error','اكتب DELETE بالضبط'); ok=false; } else setFieldError('factory-confirm','factory-confirm-error','');
+            if(!ok) return;
+            const confirmed=await requestConfirm('تأكيد نهائي','سيتم حذف كل شيء بلا رجعة. هل أنت متأكد 100%؟','نعم، احذف كل شيء', true); if(!confirmed) return;
+            try{
+                // Factory reset is admin-only; server verifies PIN hash before delete
+                showToast('هذه العملية للمالك فقط — تواصل مع المالك أو استخدم صلاحية admin','info',3500);
+                closeDialog('factory-reset-modal');
+            } catch(e){ showToast(e.message,'error'); }
+        }
+        // Init — guard against double init from HMR/iframe reload
+        let __initDone=false;
+        window.onload = async () => {
+            if(__initDone) return; __initDone=true;
+            loadTheme(); checkSignupAvailability(); await initSupabase();
+            if(supabaseClient){
+                const {data:{session}}=await supabaseClient.auth.getSession();
+                if(session?.user){ const {data:user}=await supabaseClient.from('users').select('*').eq('id', session.user.id).maybeSingle(); if(user){ currentUser={...user, name:user.display_name||user.username, permissions:user.permissions||[]}; await loginSuccess(); } }
+            }
+            // Attach login/signup enter key
+            ['login-name','login-pin'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); }); });
+            ['signup-name','signup-pin','signup-pin-confirm'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('keydown', e=>{ if(e.key==='Enter') handleSignup(); }); });
+            searchProduct();
+        };
+        async function updateEmployee(action, worker, payload={}){
+            if(currentUser?.role!=='admin'){ showToast('للمالك فقط','error'); return; }
+            const {data:{session}}=await supabaseClient.auth.getSession();
+            const ownerPin=String(db.ownerPin||'').trim();
+            const headers={'content-type':'application/json'}; if(session?.access_token) headers.authorization=`Bearer ${session.access_token}`;
+            const response=await fetch('/api/worker-auth',{method:'POST',headers, body:JSON.stringify({action, id:worker.id, ownerPin, ...payload})});
+            const result=await response.json();
+            if(!response.ok||!result.ok) throw new Error(result.error||'تعذر التنفيذ');
+            await loadDBFromCloud(); if(action==='delete') db.workers=(db.workers||[]).filter(item=> String(item.id)!==String(worker.id)); renderWorkers();
+        }
+        async function openPermissionsEditor(worker){
+            if(currentUser?.role!=='admin') return;
+            const options=['pos','weights','expenses','shift','add_inv','edit_inv','delete_cart','reports'];
+            const labels=['POS / البيع','الأوزان','المصروفات','تقفيل الشيفت','إضافة منتجات','تعديل منتجات','حذف من السلة','التقارير'];
+            const selected=new Set(worker.permissions||[]);
+            const choices=labels.map((label,i)=> `<label style="display:flex; gap:8px; align-items:center; margin:10px 0"><input type="checkbox" value="${options[i]}" ${selected.has(options[i])?'checked':''}> ${label}</label>`).join('');
+            const modal=document.createElement('div'); modal.className='app-dialog'; modal.innerHTML=`<div class="app-dialog-box"><h3>صلاحيات ${escapeHtml(worker.display_name||worker.username)}</h3><div>${choices}</div><div class="dialog-actions"><button class="btn btn-ghost" onclick="this.closest('.app-dialog').remove()">إلغاء</button><button class="btn btn-main" id="save-permissions">حفظ الصلاحيات</button></div></div>`;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', e=>{ if(e.target===modal) modal.remove(); });
+            modal.querySelector('#save-permissions').onclick=async()=>{ try{ const perms=Array.from(modal.querySelectorAll('input:checked')).map(i=>i.value); await updateEmployee('update', worker, {username:worker.username, permissions:perms, active:worker.active!==false}); modal.remove(); showToast('تم تحديث الصلاحيات','success'); } catch(e){ showToast(e.message,'error'); } };
+        }
+        async function deleteEmployee(worker){
+            if(currentUser?.role!=='admin') return;
+            const ok=await requestConfirm('حذف الموظف',`هل تريد حذف الموظف ${worker.display_name||worker.username} وتعطيل حسابه؟ سيُحتفظ بالسجلات التاريخية.`,'حذف',true); if(!ok) return;
+            try{ await updateEmployee('delete', worker); showToast('تم حذف الموظف وتعطيل حسابه','success'); } catch(e){ showToast(e.message,'error'); }
+        }
+        function setTheme(theme){
+            document.documentElement.dataset.theme=theme;
+            localStorage.setItem('ayoub-theme', theme);
+            document.getElementById('theme-light-btn')?.setAttribute('aria-pressed', String(theme==='light'));
+            document.getElementById('theme-dark-btn')?.setAttribute('aria-pressed', String(theme==='dark'));
+        }
+        function loadTheme(){
+            const saved=localStorage.getItem('ayoub-theme');
+            const prefersDark=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            setTheme(saved || (prefersDark?'dark':'light'));
+        }
+        window.handleLogin=handleLogin; window.handleSignup=handleSignup; window.switchAuthTab=switchAuthTab; window.toggleSignupPin=toggleSignupPin; window.loginSuccess=loginSuccess; window.logout=logout;
+    </script>
+    <a id="support-wa-fab" href="https://wa.me/201281338512?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9%20%D9%81%D9%8A%20%D9%86%D8%B8%D8%A7%D9%85%20%D8%B3%D9%88%D8%A8%D8%B1%20%D9%85%D8%A7%D8%B1%D9%83%D8%AA%20%D8%A3%D9%8A%D9%88%D8%A8" target="_blank" rel="noopener noreferrer" aria-label="الدعم الفني واتساب +201281338512">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+        <span class="fab-tip">الدعم الفني — واتساب</span>
+    </a>
+</body>
+</html>

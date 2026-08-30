@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سوبر ماركت أيوب - للنظم الذكية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --danger-color: #e74c3c;
+            --light-bg: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .nav-links button {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 4px;
+        }
+
+        .nav-links button:hover { background: rgba(255,255,255,0.1); }
+
+        /* Main Container */
+        .container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .screen { display: none; }
+        .active-screen { display: block; }
+
+        /* Cards and Elements */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        input, select, btn {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .btn-main { background: var(--accent-color); color: white; }
+        .btn-danger { background: var(--danger-color); color: white; }
+
+        /* POS Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background: #eee; }
+
+        /* Login Modal */
+        #login-modal {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+
+        .login-box { background: white; padding: 30px; border-radius: 10px; width: 300px; text-align: center; }
+
+        /* Weights Panel */
+        .weights-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .hidden { display: none; }
+
+        /* Modern professional dashboard skin — presentation only */
+        :root {
+            --primary-color: #14213d;
+            --accent-color: #0f9d78;
+            --danger-color: #d94f5c;
+            --light-bg: #f3f6fa;
+            --white: #ffffff;
+            --ink: #172033;
+            --muted: #718096;
+            --line: #e5eaf1;
+            --navy-soft: #20345d;
+            --shadow-sm: 0 4px 14px rgba(20, 33, 61, 0.07);
+            --shadow-md: 0 12px 30px rgba(20, 33, 61, 0.11);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: #f3f6fa;
+            color: var(--ink);
+            font-family: Tahoma, 'Segoe UI', sans-serif;
+            letter-spacing: .01em;
+        }
+
+        nav {
+            background: linear-gradient(115deg, #14213d 0%, #20345d 100%);
+            min-height: 72px;
+            padding: 14px clamp(16px, 3vw, 36px);
+            box-shadow: 0 8px 24px rgba(20, 33, 61, .18);
+            position: relative;
+            z-index: 2;
+        }
+
+
+        #current-user-display { color: #b9c8df !important; }
+
+        .nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+        .nav-links button {
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.18);
+            color: #f8fafc;
+            padding: 9px 14px;
+            margin: 0;
+            border-radius: 8px;
+            transition: background .2s ease, border-color .2s ease, transform .2s ease;
+        }
+        .nav-links button:hover { background: rgba(69,211,167,.18); border-color: #45d3a7; transform: translateY(-1px); }
+
+        .container { padding: clamp(16px, 3vw, 32px); }
+        .card {
+            background: rgba(255,255,255,.96);
+            padding: clamp(18px, 2.5vw, 28px);
+            border: 1px solid rgba(229,234,241,.9);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 22px;
+            transition: box-shadow .25s ease, transform .25s ease;
+        }
+        .card:hover { box-shadow: var(--shadow-md); }
+        h3, h4 { color: var(--primary-color); margin-top: 0; }
+        h3 { font-size: 1.2rem; margin-bottom: 18px; }
+
+        input, select, btn {
+            background: #fbfcfe;
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            padding: 11px 13px;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+        input:focus, select:focus { background: #fff; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(15,157,120,.12); }
+        input::placeholder { color: #9aa7b8; }
+
+        .btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 11px 18px;
+            box-shadow: 0 3px 8px rgba(20,33,61,.08);
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 7px 16px rgba(20,33,61,.14); filter: brightness(1.04); }
+        .btn:active { transform: translateY(0); }
+        .btn-main { background: linear-gradient(135deg, #0f9d78, #16b98d); color: #fff; }
+        .btn-danger { background: linear-gradient(135deg, #d94f5c, #ef6972); color: #fff; }
+
+        table { border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: var(--shadow-sm); }
+        th, td { border: 0; border-bottom: 1px solid var(--line); padding: 13px 12px; }
+        th { background: #eef3f8; color: var(--primary-color); font-weight: 700; }
+        tr:last-child td { border-bottom: 0; }
+        tbody tr { transition: background .18s ease; }
+        tbody tr:hover { background: #f5fbf9; }
+
+        #login-modal { background: rgba(13, 24, 46, .78); backdrop-filter: blur(8px); }
+        .login-box {
+            background: #fff;
+            border: 1px solid rgba(255,255,255,.65);
+            border-radius: 20px;
+            padding: 34px;
+            width: min(390px, calc(100% - 32px));
+            box-shadow: 0 24px 70px rgba(10,23,49,.3);
+        }
+        .login-box h3 { font-size: 1.45rem; margin-bottom: 22px; }
+        .login-box input { width: 100% !important; margin: 6px 0; padding: 13px 14px; }
+
+        .section-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .section-tabs .btn { border: 1px solid var(--line); background: #f8fafc; color: var(--primary-color); }
+        .section-tabs .btn.active { background: linear-gradient(135deg, #0f9d78, #16b98d); color: #fff; border-color: transparent; }
+        .barcode-scanner-modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgba(13, 24, 46, .78); backdrop-filter: blur(8px); }
+        .barcode-scanner-modal[hidden] { display: none; }
+        .barcode-scanner-box { width: min(520px, 100%); background: var(--white); border-radius: 18px; padding: 18px; box-shadow: 0 24px 70px rgba(10,23,49,.3); }
+        .barcode-scanner-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+        #barcode-reader { width: 100%; overflow: hidden; border-radius: 12px; background: #101827; }
+        #barcode-reader video { border-radius: 12px; }
+        #barcode-scanner-status { color: var(--muted); margin-bottom: 0; }
+        .weight-product-search { display: flex; gap: 8px; margin: 12px 0; }
+        .weight-product-search input { flex: 1; min-width: 0; }
+        .weight-product-search .btn { white-space: nowrap; }
+        .weight-stock-meta { display: flex; gap: 14px; align-items: end; flex-wrap: wrap; margin: 12px 0; }
+        .weight-stock-meta label, #pos-weight-panel > div > label { display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-weight: 700; }
+        #weight-product-select { width: 100%; }
+        #weight-calculated-total { color: var(--accent-color); font-size: 1.15rem; }
+        .pos-search-bar .btn { white-space: nowrap; }
+        .cart-quantity-control .btn { line-height: 1; }
+        .cart-quantity-control input { margin: 0; }
+        .weights-grid { gap: 18px; }
+        .weights-grid > div { border: 1px solid var(--line) !important; border-radius: 13px; background: #fbfcfe; padding: 18px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+        #search-results { background: #f8fafc !important; }
+
+        @media (max-width: 760px) {
+            nav { align-items: flex-start; gap: 12px; flex-direction: column; }
+            .nav-links { justify-content: flex-start; width: 100%; }
+            .nav-links button { flex: 1 1 auto; }
+            .pos-search-bar { align-items: stretch !important; }
+            .pos-search-bar .btn { padding-inline: 12px; }
+            .weights-grid { grid-template-columns: 1fr; }
+            table { display: block; overflow-x: auto; white-space: nowrap; }
+            .card { padding: 17px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشاشة العلوية -->
+    <nav>
+        <div>
+            <strong>سوبر ماركت أيوب</strong>
+            <span id="current-user-display" style="margin-right: 15px; font-size: 0.8rem; color: #f1c40f;"></span>
+        </div>
+        <div class="nav-links">
+            <button onclick="showScreen('pos')">البيع</button>
+            <button onclick="showScreen('inventory')">المخزن</button>
+            <button onclick="showScreen('expenses')">المصروفات</button>
+            <button onclick="showScreen('settings')">الإعدادات</button>
+            <button onclick="logout()" class="btn-danger">خروج</button>
+        </div>
+    </nav>
+
+    <!-- واجهة الدخول -->
+    <div id="login-modal">
+        <div class="login-box">
+            <h3>تسجيل الدخول</h3>
+            <input type="text" id="login-name" placeholder="الاسم" style="width: 90%"><br>
+            <input type="password" id="login-pin" placeholder="الرمز السري" style="width: 90%"><br><br>
+            <button class="btn btn-main" onclick="handleLogin()" style="width: 100%">دخول</button>
+        </div>
+    </div>
+
+    <div id="barcode-scanner-modal" class="barcode-scanner-modal" role="dialog" aria-modal="true" aria-labelledby="barcode-scanner-title" hidden>
+        <div class="barcode-scanner-box">
+            <div class="barcode-scanner-header">
+                <h3 id="barcode-scanner-title">مسح الباركود</h3>
+                <button type="button" class="btn btn-danger" onclick="closeBarcodeScanner()" aria-label="إغلاق ماسح الباركود">إغلاق</button>
+            </div>
+            <div id="barcode-reader" aria-label="واجهة كاميرا قراءة الباركود"></div>
+            <p id="barcode-scanner-status">اسمح بالوصول إلى الكاميرا ووجّهها نحو الباركود.</p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- شاشة البيع POS -->
+        <div id="screen-pos" class="screen">
+            <div class="card">
+                <h3><i class="fas fa-cash-register"></i> نقطة البيع</h3>
+                    <div class="section-tabs" role="tablist" aria-label="نوع مبيعات نقطة البيع">
+                        <button type="button" class="btn btn-main pos-tab active" onclick="switchPosTab('piece', this)">مبيعات القطع</button>
+                        <button type="button" class="btn pos-tab" onclick="switchPosTab('weight', this)">مبيعات الأوزان</button>
+                    </div>
+                    <div id="pos-piece-panel">
+                        <div class="pos-search-bar" style="display: flex; gap: 10px; align-items: center; margin-bottom: 18px;">
+                            <input type="text" id="pos-search" placeholder="ابحث بالاسم أو الباركود..." style="width: 70%; flex: 1;" oninput="searchProduct()" onkeydown="if (event.key === 'Enter') { event.preventDefault(); searchProduct(); }">
+                            <button type="button" class="btn btn-main" onclick="searchProduct()" aria-label="بحث عن منتج">بحث 🔍</button>
+                            <button type="button" class="btn btn-main" onclick="openBarcodeScanner()" aria-label="مسح الباركود بالكاميرا">مسح بالباركود 📷</button>
+                        </div>
+                        <div id="search-results" style="border: 1px solid #ddd; padding: 10px;">
+                            <h4>منتجات القطع</h4>
+                            <div id="results-list"></div>
+                        </div>
+                    </div>
+                    <div id="pos-weight-panel" class="hidden">
+                        <div style="border: 1px solid #ddd; padding: 10px;">
+                            <h4>مبيعات الأوزان / الكيلو</h4>
+                            <div class="weight-product-search">
+                                <input type="search" id="weight-product-search" placeholder="ابحث عن صنف موزون بالاسم..." oninput="renderWeightProducts()" aria-label="بحث في منتجات الأوزان">
+                                <button type="button" class="btn btn-main" onclick="renderWeightProducts()">بحث</button>
+                            </div>
+                            <select id="weight-product-select" onchange="updateWeightDetails(this.value)" aria-label="اختيار صنف الوزن">
+                                <option value="">اختر صنف الوزن من المخزن</option>
+                            </select>
+                            <div class="weight-stock-meta">
+                                <label>سعر الكيلو
+                                    <input type="number" id="weight-price" readonly aria-readonly="true">
+                                </label>
+                                <span>الكمية المتاحة: <strong id="weight-available-kg">0</strong> كجم</span>
+                            </div>
+                            <label>الوزن بالجرام
+                                <input type="number" id="weight-grams" placeholder="مثال: 250" min="1" step="1" oninput="calculateWeightTotal()">
+                            </label>
+                            <p>الإجمالي: <strong id="weight-calculated-total">0.00</strong> ج.م</p>
+                            <button class="btn btn-main" onclick="addWeightItem()">إضافة للفاتورة</button>
+                        </div>
+                    </div>
+
+                <table id="cart-table">
+                    <thead>
+                        <tr>
+                            <th>الصنف</th>
+                            <th>السعر</th>
+                            <th>الكمية</th>
+                            <th>الإجمالي</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items"></tbody>
+                </table>
+
+                <div style="margin-top: 20px; text-align: left;">
+                    <h3>الإجمالي: <span id="cart-total">0</span> ج.م</h3>
+                    <button class="btn btn-main" onclick="checkout()">إتمام البيع وطباعة</button>
+                </div>
+                <div id="pos-shift-stats" class="card" style="margin-top: 18px; display: flex; justify-content: space-around; gap: 12px; text-align: center;">
+                    <div><strong>عدد الفواتير في هذا الشيفت</strong><br><span id="shift-invoices-count">0</span></div>
+                    <div><strong>إجمالي عدد القطع/الأصناف المباعة</strong><br><span id="shift-items-count">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ��اشة المخزن -->
+        <div id="screen-inventory" class="screen">
+            <div class="card">
+                <h3>إضافة منتج جديد</h3>
+                <div id="inventory-form" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" id="p-name" placeholder="اسم المنتج">
+                    <input type="text" id="p-barcode" placeholder="الباركود">
+                    <input type="number" id="p-buy" placeholder="سعر الشراء">
+                    <input type="number" id="p-sell" placeholder="سعر البيع">
+                    <select id="p-type" aria-label="نوع الصنف">
+                        <option value="piece">قطعة</option>
+                        <option value="weight">وزن (كجم)</option>
+                    </select>
+                    <input type="number" id="p-qty" placeholder="الكمية (قطعة أو كجم)" step="any">
+                    <button class="btn btn-main" onclick="addNewProduct()">إضافة للمخزن</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>قائمة الأصناف</h3>
+                <div class="section-tabs" role="tablist" aria-label="نوع منتجات المخزن">
+                    <button type="button" class="btn btn-main inventory-tab active" onclick="filterInventoryTab('piece', this)">منتجات بالقطعة</button>
+                    <button type="button" class="btn inventory-tab" onclick="filterInventoryTab('weight', this)">منتجات بالأوزان/الكيلو</button>
+                </div>
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>الباركود</th>
+                            <th>الاسم</th>
+                            <th>الشراء</th>
+                            <th>البيع</th>
+                            <th>الكمية</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- شاشة المصروفات -->
+        <div id="screen-expenses" class="screen">
+            <div class="card">
+                <h3>تسجيل مصروفات</h3>
+                <div id="expenses-form">
+                <input type="text" id="exp-reason" placeholder="السبب (أكياس، فواتير...)">
+                <input type="number" id="exp-amount" placeholder="المبلغ">
+                <button class="btn btn-danger" onclick="addExpense()">تسجيل المصروف</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>تقفيل الشيفت (End Shift)</h3>
+                <button class="btn btn-main" style="background: #8e44ad;" onclick="closeShift()">تقفيل وإرسال تقرير واتساب</button>
+                <button class="btn btn-main" onclick="startNewShift()" style="margin-right: 10px;">��دء وردية جديدة</button>
+            </div>
+        </div>
+
+        <!-- شاشة الإعدادات -->
+        <div id="screen-settings" class="screen">
+            <div class="card">
+                <h3>إدارة العمال والصلاحيات</h3>
+                <div id="owner-only-settings">
+                    <input type="text" id="worker-name" placeholder="اسم العامل">
+                    <input type="password" id="worker-pin" placeholder="الرمز السري">
+                    <div style="margin: 10px 0;">
+                        <label><input type="checkbox" class="perm" value="pos"> البيع</label>
+                        <label><input type="checkbox" class="perm" value="weights"> الأوزان</label>
+                        <label><input type="checkbox" class="perm" value="expenses"> المصروفات</label>
+                        <label><input type="checkbox" class="perm" value="shift"> تقفيل شيفت</label>
+                        <label><input type="checkbox" class="perm" value="add_inv"> إضافة أصناف</label>
+                        <label><input type="checkbox" class="perm" value="edit_inv"> تعديل أصناف</label>
+                        <label><input type="checkbox" class="perm" value="delete_cart"> حذف من السلة</label>
+                        <label><input type="checkbox" class="perm" value="reports"> التقارير</label>
+                    </div>
+                    <button class="btn btn-main" onclick="addWorker()">إضافة عامل</button>
+                </div>
+                <hr>
+                <div id="workers-list"></div>
+            </div>
+            <div class="card">
+                <h3>رقم هاتف المالك للواتساب</h3>
+                <p style="color: #718096; margin-top: -8px;">يُستخدم لإرسال تقرير تقفيل الشيفت مباشرة إلى المالك.</p>
+                <input type="tel" id="owner-whatsapp-number" placeholder="مثال: 201012345678" inputmode="numeric" autocomplete="tel">
+                <button class="btn btn-main" onclick="saveOwnerWhatsappNumber()">حفظ رقم الواتساب</button>
+                <span id="owner-whatsapp-status" style="margin-right: 10px; color: #0f9d78;"></span>
+            </div>
+            <div class="card" id="owner-pin-settings">
+                <h3>تغيير رمز المالك</h3>
+                <input type="password" id="old-owner-pin" placeholder="الرمز القديم">
+                <input type="password" id="new-owner-pin" placeholder="الرمز الجديد">
+                <button class="btn btn-main" onclick="changeOwnerPin()">تحديث رمز المالك</button>
+                <span id="owner-pin-status" style="margin-right: 10px; color: #0f9d78;"></span>
+            </div>
+            <div class="card">
+                <h3>بيانات النظام</h3>
+                <button class="btn btn-danger" onclick="factoryReset()">تصفير كافة البيانات (ضبط مصنع)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // --- Supabase Configuration ---
+        let supabaseClient;
+        let cloudChannel;
+
+        async function initSupabase() {
+            try {
+                const response = await fetch('/api/config');
+                const config = await response.json();
+                if (!config.supabaseUrl || !config.supabaseKey) {
+                    throw new Error('Supabase configuration missing');
+                }
+                supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+                await loadDBFromCloud();
+                subscribeToCloudState();
+            } catch (error) {
+                console.error('Supabase init failed:', error);
+                alert('فشل الاتصال بقاعدة البيانات. يرجى التأكد من الإعدادات.');
+            }
+        }
+
+        // --- 1. البيانات الأساسية ---
+        let db = {
+            ownerPin: "0000",
+            ownerWhatsappNumber: "",
+            workers: [],
+            products: [],
+            sales: [],
+            expenses: [],
+            shiftClosings: [],
+            currentShiftSales: 0,
+            currentShiftInvoices: 0,
+            currentShiftItems: 0,
+            currentShiftItemDetails: {}
+        };
+        db.currentShiftInvoices = db.currentShiftInvoices || 0;
+        db.currentShiftItems = db.currentShiftItems || 0;
+        db.currentShiftItemDetails = db.currentShiftItemDetails || {};
+        function ensureProductIds() {
+            db.products = (db.products || []).map(product => ({
+                ...product,
+                id: product.id || product.barcode || `product-${Date.now()}-${Math.random().toString(36).slice(2)}`
+            }));
+        }
+        ensureProductIds();
+
+        let currentUser = null;
+        let cart = [];
+
+        async function saveDB() {
+            try {
+                // Save products
+                const productRows = (db.products || []).map(p => ({ 
+                    id: p.id, 
+                    name: p.name, 
+                    barcode: p.barcode || null, 
+                    buy_price: Number(p.buyPrice) || 0, 
+                    sell_price: Number(p.sellPrice) || 0, 
+                    quantity: Number(p.qty) || 0, 
+                    unit_type: p.type === 'weight' ? 'weight' : 'piece' 
+                }));
+                if (productRows.length) {
+                    await supabaseClient.from('products').upsert(productRows, { onConflict: 'id' });
+                }
+
+                // Save settings (Owner PIN and WhatsApp)
+                await supabaseClient.from('settings').upsert([
+                    { key: 'owner_pin', value: { pin: db.ownerPin } },
+                    { key: 'owner_whatsapp', value: { number: db.ownerWhatsappNumber } }
+                ]);
+
+                renderInventory(); renderWeightProducts(); renderWorkers(); renderShiftStats();
+            } catch (error) {
+                console.error('Save failed:', error);
+            }
+        }
+
+        async function loadDBFromCloud() {
+            if (!supabaseClient) return;
+            const [{ data: products }, { data: sales }, { data: expenses }, { data: closings }, { data: users }, { data: settings }] = await Promise.all([
+                supabaseClient.from('products').select('*').order('name'),
+                supabaseClient.from('sales').select('*').order('created_at', { ascending: false }),
+                supabaseClient.from('expenses').select('*').order('created_at', { ascending: false }),
+                supabaseClient.from('shift_closings').select('*').order('closed_at', { ascending: false }),
+                supabaseClient.from('users').select('id, username, display_name, role, permissions, pin').order('display_name'),
+                supabaseClient.from('settings').select('*')
+            ]);
+            
+            db.products = (products || []).map(p => ({ id: p.id, name: p.name, barcode: p.barcode, buyPrice: Number(p.buy_price) || 0, sellPrice: Number(p.sell_price) || 0, qty: Number(p.quantity) || 0, type: p.unit_type }));
+            db.sales = sales || []; 
+            db.expenses = expenses || []; 
+            db.shiftClosings = closings || [];
+            db.workers = (users || []).map(u => ({ ...u, name: u.display_name || u.username, permissions: u.permissions || [] }));
+            
+            if (settings) {
+                const pinSetting = settings.find(s => s.key === 'owner_pin');
+                if (pinSetting) db.ownerPin = pinSetting.value.pin;
+                const whatsappSetting = settings.find(s => s.key === 'owner_whatsapp');
+                if (whatsappSetting) db.ownerWhatsappNumber = whatsappSetting.value.number;
+            }
+
+            renderWorkers(); renderInventory(); renderWeightProducts(); updateWeightDetails(); renderCart(); renderShiftStats();
+        }
+
+        async function persistProducts() { return saveDB(); }
+
+        function startSupabaseKeepAlive() {}
+        function subscribeToCloudState() {
+            cloudChannel = supabaseClient.channel('business-live-updates');
+            ['users', 'products', 'sales', 'expenses', 'shift_closings'].forEach(table => cloudChannel.on('postgres_changes', { event: '*', schema: 'public', table }, loadDBFromCloud));
+            cloudChannel.subscribe();
+        }
+
+        // --- 2. نظام الدخول والصلاحيات ---
+        async function handleLogin() {
+            const nameInput = document.getElementById('login-name').value;
+            const pinInput = document.getElementById('login-pin').value;
+            const name = nameInput.trim();
+            const pin = pinInput.trim();
+            const normalizedName = name.toLocaleLowerCase();
+            const normalizedOwnerPin = String(db.ownerPin ?? '').trim();
+
+            if (pin !== normalizedOwnerPin) {
+                const { data: worker, error } = await supabaseClient.from('users').select('id, username, display_name, role, permissions, pin').or(`username.ilike.${name},display_name.ilike.${name}`).eq('pin', pin).maybeSingle();
+                if (error || !worker) return alert('بيانات الدخول غير صحيحة');
+                currentUser = { ...worker, name: worker.display_name || worker.username, permissions: worker.permissions || [] };
+                loginSuccess();
+                return;
+            }
+
+            console.log('[v0] Login attempt:', {
+                enteredUsername: name,
+                normalizedUsername: normalizedName,
+                hasPin: Boolean(pin),
+                workerCount: Array.isArray(db.workers) ? db.workers.length : 0,
+                authSource: 'Supabase Auth + profiles'
+            });
+
+            if (pin === normalizedOwnerPin) {
+                currentUser = { name: "المالك", role: 'admin', permissions: ['all'] };
+                console.log('[v0] Login accepted: owner PIN matched.');
+                loginSuccess();
+                return;
+            }
+
+            const worker = (db.workers || []).find(w => {
+                const workerName = String(w.name ?? '').trim().toLocaleLowerCase();
+                const workerPin = String(w.pin ?? '').trim();
+                return workerName === normalizedName && workerPin === pin;
+            });
+
+            if (worker) {
+                currentUser = { ...worker, name: String(worker.name).trim(), role: 'worker' };
+                console.log('[v0] Login accepted: Supabase Auth + profiles matched.');
+                loginSuccess();
+            } else {
+                console.log('[v0] Login rejected:', {
+                    reason: 'username_or_pin_mismatch',
+                    usernameFound: (db.workers || []).some(w => String(w.name ?? '').trim().toLocaleLowerCase() === normalizedName),
+                    pinProvided: Boolean(pin),
+                    authSource: 'Supabase Auth + profiles'
+                });
+                alert("بيانات الدخول غير صحيحة");
+            }
+        }
+
+        function loginSuccess() {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('current-user-display').innerText = `المستخدم: ${currentUser.name}`;
+            showScreen('pos');
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            currentUser = null;
+            location.reload();
+        }
+
+        function hasPermission(perm) {
+            if (currentUser.role === 'admin' || currentUser.permissions.includes('all')) return true;
+            return currentUser.permissions.includes(perm);
+        }
+
+        function checkOwnerPIN() {
+            const pin = prompt("هذا الإجراء يتطلب رمز المالك (Owner PIN):");
+            return pin === db.ownerPin;
+        }
+
+        // --- 3. التنقل بين ا��شاشات ---
+        function showScreen(screenId) {
+            if (screenId === 'settings' && currentUser.role !== 'admin') {
+                if (!checkOwnerPIN()) return;
+            }
+            
+            // تحقق من صلاحيات محددة
+            if (screenId === 'pos' && !hasPermission('pos')) return alert("لا تملك صلاحية البيع");
+            if (screenId === 'expenses' && !hasPermission('expenses')) return alert("لا تملك صلاحية المصروفات");
+
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+            document.getElementById('screen-' + screenId).classList.add('active-screen');
+            
+            if (screenId === 'inventory') renderInventory();
+            if (screenId === 'settings') renderWorkers();
+            if (screenId === 'pos') renderShiftStats();
+        }
+
+        function resetForm(formId, firstFieldId) {
+            const form = document.getElementById(formId);
+            if (form) form.querySelectorAll('input, select, textarea').forEach(field => {
+                if (field.id === 'p-type') field.value = 'piece';
+                else if (field.type !== 'checkbox' && field.type !== 'radio') field.value = '';
+            });
+            const first = document.getElementById(firstFieldId);
+            if (first) setTimeout(() => first.focus(), 0);
+        }
+
+        // --- 4. إدارة المخزن ---
+        function addNewProduct() {
+            if (!hasPermission('add_inv')) return alert("لا تملك صلاحية الإضافة");
+            
+            const product = {
+                id: crypto.randomUUID ? crypto.randomUUID() : `product-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                name: document.getElementById('p-name').value.trim(),
+                barcode: document.getElementById('p-barcode').value.trim(),
+                buyPrice: Number(document.getElementById('p-buy').value) || 0,
+                sellPrice: Number(document.getElementById('p-sell').value) || 0,
+                qty: Number(document.getElementById('p-qty').value) || 0,
+                type: document.getElementById('p-type').value
+            };
+            if (!product.name || !product.barcode || product.qty <= 0) return alert('أدخل بيانات المنتج والكمية بشكل صحيح');
+            db.products.push(product);
+            saveDB();
+            renderInventory();
+            resetForm('inventory-form', 'p-name');
+            alert("تمت الإضافة");
+        }
+
+        let inventoryFilter = 'piece';
+
+        function filterInventoryTab(type, button) {
+            inventoryFilter = type;
+            document.querySelectorAll('.inventory-tab').forEach(tab => tab.classList.remove('active', 'btn-main'));
+            button.classList.add('active', 'btn-main');
+            renderInventory();
+        }
+
+        function renderInventory() {
+            const list = document.getElementById('inventory-list');
+            list.innerHTML = '';
+            db.products.filter(p => (p.type || 'piece') === inventoryFilter).forEach(p => {
+                const index = db.products.indexOf(p);
+                list.innerHTML += `
+                    <tr>
+                        <td>${p.barcode}</td>
+                        <td>${p.name}</td>
+                        <td>${Number(p.buyPrice) ? Number(p.buyPrice).toFixed(2) : '-'}</td>
+                        <td>${Number(p.sellPrice) || 0}</td>
+                        <td>${Number(p.qty) || 0} ${p.type === 'weight' ? 'كجم' : 'قطعة'}</td>
+                        <td><button onclick="editProduct(${index})" class="btn-main">تعديل</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function editProduct(index) {
+            if (!hasPermission('edit_inv') && !checkOwnerPIN()) return;
+            const product = db.products[index];
+            if (!product) return;
+            const name = prompt('اسم المنتج:', product.name || '');
+            if (name === null) return;
+            const barcode = prompt('الباركود:', product.barcode || '');
+            if (barcode === null) return;
+            const buyPrice = prompt('سعر الشراء:', Number(product.buyPrice) || 0);
+            if (buyPrice === null) return;
+            const sellPrice = prompt('سعر البيع:', Number(product.sellPrice) || 0);
+            if (sellPrice === null) return;
+            const type = prompt('نوع الوحدة (piece أو weight):', product.type || 'piece');
+            if (type === null || !['piece', 'weight'].includes(type.trim())) return alert('نوع الوحدة غير صحيح');
+            const qty = prompt('الكمية:', Number(product.qty) || 0);
+            if (qty === null) return;
+            product.name = name.trim();
+            product.barcode = barcode.trim();
+            product.buyPrice = Number(buyPrice) || 0;
+            product.sellPrice = Number(sellPrice) || 0;
+            product.type = type.trim();
+            product.qty = Number(qty) || 0;
+            saveDB();
+            renderInventory();
+            renderWeightProducts();
+            alert('تم تحديث بيانات الصنف');
+        }
+
+        // --- 5. نظام البيع POS ---
+        let posFilter = 'piece';
+
+        function switchPosTab(type, button) {
+            posFilter = type;
+            document.querySelectorAll('.pos-tab').forEach(tab => tab.classList.remove('active', 'btn-main'));
+            button.classList.add('active', 'btn-main');
+            document.getElementById('pos-piece-panel').classList.toggle('hidden', type !== 'piece');
+            document.getElementById('pos-weight-panel').classList.toggle('hidden', type !== 'weight');
+            if (type === 'piece') searchProduct();
+            else {
+                renderWeightProducts();
+                updateWeightDetails();
+            }
+        }
+
+        let barcodeScanner = null;
+        let barcodeScanLocked = false;
+
+        async function openBarcodeScanner() {
+            if (typeof Html5QrcodeScanner === 'undefined') {
+                alert('تعذر تحميل مكتبة الكاميرا. تحقق من الاتصال بالإنترنت.');
+                return;
+            }
+            const modal = document.getElementById('barcode-scanner-modal');
+            const reader = document.getElementById('barcode-reader');
+            modal.hidden = false;
+            reader.innerHTML = '';
+            barcodeScanLocked = false;
+            document.getElementById('barcode-scanner-status').innerText = 'جاري طلب صلاحية الكاميرا...';
+
+            try {
+                if (!navigator.mediaDevices?.getUserMedia) throw new Error('camera-unavailable');
+                const permissionStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } } });
+                permissionStream.getTracks().forEach(track => track.stop());
+                document.getElementById('barcode-scanner-status').innerText = 'وجّه الكاميرا نحو الباركود.';
+                barcodeScanner = new Html5QrcodeScanner('barcode-reader', {
+                    fps: 10,
+                    qrbox: { width: 280, height: 140 },
+                    rememberLastUsedCamera: true,
+                    showTorchButtonIfSupported: true,
+                    videoConstraints: { facingMode: { ideal: 'environment' } }
+                }, false);
+                barcodeScanner.render(handleBarcodeScan, errorMessage => {
+                    if (errorMessage && !String(errorMessage).toLowerCase().includes('scan')) {
+                        document.getElementById('barcode-scanner-status').innerText = 'جارٍ البحث عن باركود...';
+                    }
+                });
+            } catch (error) {
+                console.warn('[v0] Barcode camera permission failed:', error);
+                await closeBarcodeScanner();
+                alert(error.name === 'NotAllowedError' ? 'تم رفض صلاحية الكاميرا. اسمح بالوصول من إعدادات المتصفح.' : 'لا توجد كاميرا متاحة أو تعذر تشغيلها.');
+            }
+        }
+
+        async function handleBarcodeScan(decodedText) {
+            if (barcodeScanLocked) return;
+            barcodeScanLocked = true;
+            await closeBarcodeScanner();
+            const product = db.products.find(p => String(p.barcode) === String(decodedText));
+            if (!product) {
+                alert(`المنتج غير موجود: ${decodedText}`);
+                barcodeScanLocked = false;
+                return;
+            }
+            document.getElementById('pos-search').value = decodedText;
+            if (product.type === 'weight') {
+                switchPosTab('weight', document.querySelector('.pos-tab:nth-child(2)'));
+                renderWeightProducts();
+                const select = document.getElementById('weight-product-select');
+                const productId = String(product.id || product.barcode);
+                select.value = productId;
+                updateWeightDetails(productId);
+            } else {
+                addToCart(product.barcode);
+            }
+            playBarcodeBeep();
+        }
+
+        function playBarcodeBeep() {
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                const context = new AudioContextClass();
+                const oscillator = context.createOscillator();
+                const gain = context.createGain();
+                oscillator.frequency.value = 880;
+                gain.gain.setValueAtTime(0.08, context.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.12);
+                oscillator.connect(gain).connect(context.destination);
+                oscillator.start();
+                oscillator.stop(context.currentTime + 0.12);
+            } catch (error) { console.warn('[v0] Barcode beep unavailable:', error); }
+        }
+
+        async function closeBarcodeScanner() {
+            if (barcodeScanner) {
+                try { await barcodeScanner.clear(); } catch (error) { console.warn('[v0] Barcode scanner clear failed:', error); }
+                barcodeScanner = null;
+            }
+            document.getElementById('barcode-reader').innerHTML = '';
+            document.getElementById('barcode-scanner-modal').hidden = true;
+            barcodeScanLocked = false;
+        }
+
+  function searchProduct() {
+  const query = document.getElementById('pos-search').value.trim();
+            const results = db.products.filter(p => (p.type || 'piece') === 'piece' && (p.name.includes(query) || p.barcode === query));
+            const resDiv = document.getElementById('results-list');
+            resDiv.innerHTML = '';
+            results.forEach(p => {
+                const productRef = encodeURIComponent(String(p.barcode));
+                resDiv.innerHTML += `<div style="padding:5px; border-bottom:1px solid #eee; cursor:pointer;" onclick="addToCart(decodeURIComponent('${productRef}'))">${p.name} - ${p.sellPrice} ج.م</div>`;
+            });
+        }
+
+        function renderWeightProducts() {
+            const select = document.getElementById('weight-product-select');
+            if (!select) return;
+            const selected = select.value;
+            const query = (document.getElementById('weight-product-search')?.value || '').trim().toLocaleLowerCase();
+            const products = db.products.filter(p => p.type === 'weight' && Number(p.qty) > 0 && (!query || String(p.name || '').toLocaleLowerCase().includes(query)));
+            setupWeightProductBinding();
+            select.innerHTML = '<option value="">اختر صنف الوزن من المخزن</option>' + products
+                .map(p => `<option value="${String(p.id || p.barcode).replace(/"/g, '&quot;')}">${p.name} — ${Number(p.qty).toFixed(3)} كجم متاح</option>`).join('');
+            const matchingSelection = products.find(p => String(p.id || p.barcode) === String(selected));
+            select.value = matchingSelection ? String(matchingSelection.id || matchingSelection.barcode) : (products[0] ? String(products[0].id || products[0].barcode) : '');
+            updateWeightDetails(select.value);
+        }
+
+        function updateWeightDetails(selectedId) {
+            const select = document.getElementById('weight-product-select');
+            const selectedIdValue = String(selectedId ?? select?.value ?? '');
+            const product = db.products.find(p => String(p.id || p.barcode) === selectedIdValue && p.type === 'weight');
+            const price = document.getElementById('weight-price');
+            const available = document.getElementById('weight-available-kg');
+            if (select && select.value !== selectedIdValue) select.value = selectedIdValue;
+            if (price) price.value = product ? Number(product.sellPrice).toFixed(2) : '';
+            if (available) available.innerText = product ? Number(product.qty).toFixed(3) : '0';
+            calculateWeightTotal();
+            return product;
+        }
+
+        function selectWeightProduct() {
+            return updateWeightDetails(document.getElementById('weight-product-select')?.value);
+        }
+
+        function setupWeightProductBinding() {
+            const select = document.getElementById('weight-product-select');
+            if (!select || select.dataset.bound === 'true') return;
+            select.addEventListener('change', event => updateWeightDetails(event.target.value));
+            select.dataset.bound = 'true';
+        }
+
+        function calculateWeightTotal() {
+            const price = Number(document.getElementById('weight-price')?.value || 0);
+            const grams = Number(document.getElementById('weight-grams')?.value || 0);
+            const total = grams > 0 ? (price / 1000) * grams : 0;
+            const output = document.getElementById('weight-calculated-total');
+            if (output) output.innerText = total.toFixed(2);
+        }
+
+        function addToCart(barcode) {
+            const product = db.products.find(p => String(p.barcode) === String(barcode) && (p.type || 'piece') === 'piece');
+            if (!product) return alert("الصنف المحدد غي�� موجود في منتجات القطع");
+            const availableQty = Number(product.qty);
+            if (!Number.isFinite(availableQty) || availableQty <= 0) return alert("الكمية غير كافية");
+
+            const cartItem = cart.find(item => String(item.barcode) === String(product.barcode) && item.type === 'piece');
+            if (cartItem) {
+                if (Number(cartItem.qty) + 1 > availableQty) return alert("الكمية غير كافية");
+                cartItem.qty = Number(cartItem.qty) + 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    barcode: product.barcode,
+                    name: product.name,
+                    sellPrice: Number(product.sellPrice),
+                    qty: 1,
+                    type: 'piece',
+                    saleUnit: 'piece'
+                });
+            }
+            renderCart();
+        }
+
+        function addWeightItem() {
+            if (!hasPermission('weights')) return alert("لا تملك صلاحية الأوزان");
+            const selectedId = document.getElementById('weight-product-select').value;
+            const product = db.products.find(p => String(p.id || p.barcode) === String(selectedId) && p.type === 'weight');
+            const grams = Number(document.getElementById('weight-grams').value);
+            if (!product) return alert("اختر صنف وزن من المخزن");
+            if (!Number.isFinite(grams) || grams <= 0 || grams > Number(product.qty) * 1000) return alert("الوزن غير متاح في المخزن");
+            const kg = grams / 1000;
+            const cartItem = cart.find(item => item.barcode === product.barcode && item.type === 'weight');
+            if (cartItem) {
+                if (cartItem.qty + kg > Number(product.qty)) return alert("تجاوزت الكمية المتاحة");
+                cartItem.qty += kg;
+                cartItem.grams += grams;
+                cartItem.name = `${product.name} (${cartItem.grams} جرام)`;
+            } else {
+                cart.push({ ...product, name: `${product.name} (${grams} جرام)`, weightName: product.name, grams, qty: kg, saleUnit: 'kg' });
+            }
+            renderCart();
+            document.getElementById('weight-grams').value = '';
+            renderWeightProducts();
+            calculateWeightTotal();
+            setTimeout(() => document.getElementById('weight-grams')?.focus(), 0);
+        }
+
+        function renderCart() {
+            const tbody = document.getElementById('cart-items');
+            tbody.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                const isWeight = item.type === 'weight';
+                const displayQty = isWeight ? `${Number(item.grams || item.qty * 1000).toFixed(0)} جرام` : `${Math.round(Number(item.qty))} قطعة`;
+                const unitPrice = Number(item.sellPrice);
+                const subtotal = isWeight ? unitPrice * Number(item.qty) : unitPrice * Math.round(Number(item.qty));
+                total += subtotal;
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${unitPrice.toFixed(2)}${isWeight ? ' / كجم' : ' / قطعة'}</td>
+                        <td>
+                            <div class="cart-quantity-control" style="display: inline-flex; align-items: center; gap: 6px;">
+                                <button type="button" class="btn btn-main" style="padding: 5px 10px; min-width: 32px;" onclick="updateCartQty(${index}, 1)" aria-label="زيادة كمية ${item.name}">+</button>
+                                <input type="number" min="${isWeight ? '1' : '1'}" step="${isWeight ? '1' : '1'}" value="${isWeight ? Number(item.grams || item.qty * 1000).toFixed(0) : Math.round(Number(item.qty))}" style="width: 74px; text-align: center; padding: 7px 5px;" onchange="setCartQty(${index}, this.value)" onkeydown="if (event.key === 'Enter') { this.blur(); }" aria-label="كمية ${item.name}">
+                                <span style="min-width: 48px;">${isWeight ? 'جرام' : 'قطعة'}</span>
+                                <button type="button" class="btn btn-danger" style="padding: 5px 10px; min-width: 32px;" onclick="updateCartQty(${index}, -1)" aria-label="إنقاص كمية ${item.name}">−</button>
+                            </div>
+                        </td>
+                        <td>${subtotal.toFixed(2)}</td>
+                        <td><button onclick="removeFromCart(${index})" class="btn-danger">X</button></td>
+                    </tr>
+                `;
+            });
+            document.getElementById('cart-total').innerText = total.toFixed(2);
+        }
+
+        function updateCartQty(index, delta) {
+            const item = cart[index];
+            if (!item) return;
+            const product = db.products.find(p => String(p.barcode) === String(item.barcode));
+            if (item.type === 'weight') {
+                const nextGrams = Number(item.grams || item.qty * 1000) + (delta * 100);
+                if (nextGrams <= 0) return removeFromCart(index);
+                if (product && nextGrams > Number(product.qty) * 1000) return alert("الكمية غير كافية");
+                item.grams = nextGrams;
+                item.qty = nextGrams / 1000;
+                item.name = `${item.weightName || product?.name || item.name} (${nextGrams} جرام)`;
+            } else {
+                const nextQty = Math.round(Number(item.qty)) + delta;
+                if (nextQty <= 0) return removeFromCart(index);
+                if (product && nextQty > Number(product.qty)) return alert("الكمية غير كافية");
+                item.qty = nextQty;
+            }
+            renderCart();
+        }
+
+        function setCartQty(index, value) {
+            const item = cart[index];
+            const entered = Number(value);
+            if (!item || !Number.isFinite(entered) || entered <= 0) return renderCart();
+            const product = db.products.find(p => String(p.barcode) === String(item.barcode));
+            if (item.type === 'weight') {
+                if (product && entered > Number(product.qty) * 1000) return alert("الكمية غير كافية");
+                item.grams = Math.round(entered);
+                item.qty = item.grams / 1000;
+                item.name = `${item.weightName || product?.name || item.name} (${item.grams} جرام)`;
+            } else {
+                const nextQty = Math.round(entered);
+                if (product && nextQty > Number(product.qty)) return alert("الكمية غير كافية");
+                item.qty = nextQty;
+            }
+            renderCart();
+        }
+
+        function removeFromCart(index) {
+            if (!hasPermission('delete_cart')) {
+                if (!checkOwnerPIN()) return;
+            }
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+  async function checkout() {
+  if (cart.length === 0) return;
+            let total = parseFloat(document.getElementById('cart-total').innerText);
+            
+            // خصم الكميات من المخزن: القطع بالعدد والأوزان بالكيلو
+            cart.forEach(item => {
+                const p = db.products.find(prod => String(prod.barcode) === String(item.barcode));
+                if (!p) return;
+                p.qty -= item.type === 'weight' ? Number(item.qty) : Math.round(Number(item.qty));
+                if (p.qty < 0) p.qty = 0;
+            });
+
+  const saleItems = [...cart];
+  const { error: saleError } = await supabaseClient.from('sales').insert({ user_id: currentUser?.id || null, total, payment_method: 'cash', items: saleItems });
+  if (saleError) return alert(`تعذر حفظ البيع: ${saleError.message}`);
+  await loadDBFromCloud();
+            
+            db.currentShiftSales += total;
+            db.currentShiftInvoices += 1;
+            db.currentShiftItems += cart.reduce((sum, item) => sum + (item.type === 'weight' ? Number(item.grams || item.qty * 1000) : Math.round(Number(item.qty || 0))), 0);
+            cart.forEach(item => {
+                const name = item.weightName || item.name;
+                const soldQuantity = item.type === 'weight' ? Number(item.grams || item.qty * 1000) : Math.round(Number(item.qty || 0));
+                db.currentShiftItemDetails[name] = (db.currentShiftItemDetails[name] || 0) + soldQuantity;
+            });
+            alert("تمت عملية البيع بنجاح");
+            cart = [];
+            ['pos-search', 'weight-product-search', 'weight-price', 'weight-grams'].forEach(id => {
+                const field = document.getElementById(id);
+                if (field) field.value = '';
+            });
+            const weightSelect = document.getElementById('weight-product-select');
+            if (weightSelect) weightSelect.value = '';
+            document.getElementById('results-list').innerHTML = '';
+            renderCart();
+            renderShiftStats();
+            saveDB();
+            const firstPosField = document.getElementById(posFilter === 'weight' ? 'weight-product-search' : 'pos-search');
+            if (firstPosField) setTimeout(() => firstPosField.focus(), 0);
+        }
+
+        function refreshCloudReports() {
+            renderWorkers();
+            renderShiftStats();
+        }
+
+        function renderShiftStats() {
+            const invoices = document.getElementById('shift-invoices-count');
+            const items = document.getElementById('shift-items-count');
+  const sales = db.sales || [];
+  const invoiceCount = sales.length;
+  const itemCount = sales.reduce((sum, sale) => sum + (Array.isArray(sale.items) ? sale.items.reduce((n, item) => n + (Number(item.qty) || 0), 0) : 0), 0);
+            if (invoices) invoices.innerText = invoiceCount;
+            if (items) items.innerText = itemCount;
+        }
+
+        // --- 6. المصروفات والشيفت ---
+        async function addExpense() {
+            const reason = document.getElementById('exp-reason').value.trim();
+            const amount = Number(document.getElementById('exp-amount').value) || 0;
+            if (!reason || amount <= 0) return;
+  const { error } = await supabaseClient.from('expenses').insert({ user_id: currentUser?.id || null, reason, amount });
+  if (error) return alert(`تعذر حفظ المصروف: ${error.message}`);
+  await loadDBFromCloud();
+            resetForm('expenses-form', 'exp-reason');
+            alert('تم تسجيل المصروف');
+        }
+
+  async function closeShift() {
+  if (!hasPermission('shift')) return alert("لا تملك صلاحية تقفيل الشيفت");
+
+            const totalExpenses = db.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const net = db.currentShiftSales - totalExpenses;
+
+            const soldItems = db.currentShiftItemDetails || {};
+            const expenseDetails = db.expenses.length ? db.expenses.map(exp => `- ${exp.reason}: ${exp.amount} ج.م`).join('%0A') : 'لا توجد مصروفات';
+            const soldDetails = Object.keys(soldItems).length ? Object.entries(soldItems).map(([name, qty]) => `- ${name}: ${qty}`).join('%0A') : 'لا توجد مبيعات';
+            const message = `*تقرير شيفت - سوبر ماركت أيوب*%0A` +
+                            `العامل: ${currentUser.name}%0A` +
+                            `إجمالي المبيعات: ${db.currentShiftSales} ج.م%0A` +
+                            `إجمالي المصروفات: ${totalExpenses} ج.م%0A` +
+                            `الصافي للخزينة: ${net} ج.م%0A%0A` +
+                            `تفاصيل المصروفات:%0A${expenseDetails}%0A%0A` +
+                            `الأصناف المباعة:%0A${soldDetails}%0A` +
+                            `التاريخ: ${new Date().toLocaleString()}`;
+            
+            const ownerWhatsappNumber = String(db.ownerWhatsappNumber || '').replace(/\D/g, '');
+            if (!ownerWhatsappNumber) {
+                alert("يرجى تسجيل رقم هاتف المالك للواتساب من شا��ة الإعدادات أولاً");
+                return;
+            }
+  const { error: shiftError } = await supabaseClient.from('shift_closings').insert({ user_id: currentUser?.id || null, total_sales: Number(db.currentShiftSales) || 0, expenses: Number(totalExpenses) || 0, cash_total: Number(net) || 0, notes: soldDetails });
+  if (shiftError) return alert(`تعذر حفظ إغلاق الشفت: ${shiftError.message}`);
+  await loadDBFromCloud();
+  const whatsappUrl = `https://wa.me/${ownerWhatsappNumber}?text=${message}`;
+  window.open(whatsappUrl, '_blank');
+
+            // تصفير بيانات الشيفت بعد التقفيل (اختياري)
+            if (confirm("هل تريد تصفير مبيعات الشيفت بعد الإرسال؟")) {
+                db.currentShiftSales = 0;
+                db.currentShiftInvoices = 0;
+                db.currentShiftItems = 0;
+                db.currentShiftItemDetails = {};
+                db.expenses = [];
+                renderShiftStats();
+                saveDB();
+            }
+        }
+
+        function startNewShift() {
+            if (!hasPermission('shift')) return alert('لا تملك صلاحية بدء وردية جديد��');
+            if (!confirm('س��تم تصفير مبيعات ومصروفات الشيفت فقط مع الاحتفاظ بالمخزون والعمال. هل تريد المتابعة؟')) return;
+            db.currentShiftSales = 0;
+            db.currentShiftInvoices = 0;
+            db.currentShiftItems = 0;
+            db.currentShiftItemDetails = {};
+            db.expenses = [];
+            renderShiftStats();
+            saveDB();
+            alert('بدأت وردية جديدة');
+        }
+
+        // --- 7. إدارة العمال ---
+        async function addWorker() {
+            const name = document.getElementById('worker-name').value.trim();
+            const pin = document.getElementById('worker-pin').value.trim();
+            const perms = Array.from(document.querySelectorAll('.perm:checked')).map(cb => cb.value);
+
+            if (!name || !pin) return alert("أدخل بيانات العامل");
+            const { error } = await supabaseClient.from('users').insert({ username: name, display_name: name, pin, role: 'worker', permissions: perms });
+            if (error) return alert(`تعذر إضافة الموظف: ${error.message}`);
+            await loadDBFromCloud();
+            renderWorkers();
+            document.getElementById('worker-name').value = '';
+            document.getElementById('worker-pin').value = '';
+            document.querySelectorAll('.perm:checked').forEach(cb => { cb.checked = false; });
+            document.getElementById('worker-name').focus();
+        }
+
+        function changeOwnerPin() {
+            if (currentUser?.role !== 'admin') return alert('تغيير رمز الما��ك متاح للمالك فقط');
+            const oldPin = document.getElementById('old-owner-pin').value;
+            const newPin = document.getElementById('new-owner-pin').value.trim();
+            if (oldPin !== db.ownerPin) return alert('الرمز القديم غير صحيح');
+            if (!newPin || newPin.length < 4) return alert('الرمز الجديد يجب أن يكون 4 أرقام على الأقل');
+            db.ownerPin = newPin;
+            saveDB();
+            document.getElementById('old-owner-pin').value = '';
+            document.getElementById('new-owner-pin').value = '';
+            document.getElementById('owner-pin-status').innerText = 'تم تحديث الرمز';
+        }
+
+        function saveOwnerWhatsappNumber() {
+            const input = document.getElementById('owner-whatsapp-number');
+            const number = input.value.replace(/\D/g, '');
+            if (!number) return alert("يرجى إدخال رقم هاتف صحيح");
+            db.ownerWhatsappNumber = number;
+            saveDB();
+            document.getElementById('owner-whatsapp-status').innerText = "تم الحفظ";
+        }
+
+        async function renderWorkers() {
+            const whatsappInput = document.getElementById('owner-whatsapp-number');
+            if (whatsappInput) whatsappInput.value = db.ownerWhatsappNumber || '';
+            const list = document.getElementById('workers-list');
+            if (!list) return;
+            list.innerHTML = '<h4>العمال المسجلون:</h4>';
+            db.workers = db.workers || [];
+            db.workers.forEach(w => {
+                const permissions = Array.isArray(w.permissions) ? w.permissions.join(', ') : '';
+                list.innerHTML += `<p>${w.display_name || w.username} - الصلاحيات: ${permissions}</p>`;
+            });
+        }
+
+        async function factoryReset() {
+            if (!confirm("سيتم مسح كل البيانات! هل أنت متأكد؟")) return;
+            for (const table of ['products', 'sales', 'expenses', 'shift_closings']) {
+                const { error } = await supabaseClient.from(table).delete().not('id', 'is', null);
+                if (error) return alert(`تعذر مسح ${table}: ${error.message}`);
+            }
+            await loadDBFromCloud();
+        }
+
+        // تهيئة عند الفتح
+        window.onload = async () => {
+            await initSupabase();
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session?.user) {
+                const { data: user } = await supabaseClient.from('users').select('*').eq('id', session.user.id).maybeSingle();
+                if (user) {
+                    currentUser = { ...user, name: user.display_name || user.username, permissions: user.permissions || [] };
+                    loginSuccess();
+                }
+            }
+        };
+
+    </script>
+</body>
+</html>
